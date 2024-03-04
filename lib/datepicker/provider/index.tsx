@@ -1,11 +1,13 @@
 import React, { createContext, useMemo, useState } from 'react'
-import { daysInMonth, daysOfTheWeek } from '../util'
+import { Locale, daysInMonth, daysOfTheWeek } from '../util'
 
 export interface DatepickerContextProps {
   currentDate: Date
   setCurrentDate: (date: Date) => void
   daysOfMonth: number[]
   daysOfWeek: string[]
+  selectedDate?: Date
+  setSelectedDate?: (date: Date) => void
 }
 
 const DatepickerContext = createContext<DatepickerContextProps>({
@@ -13,12 +15,16 @@ const DatepickerContext = createContext<DatepickerContextProps>({
   setCurrentDate: () => {},
   daysOfMonth: [],
   daysOfWeek: [],
+  selectedDate: undefined,
+  setSelectedDate: () => {},
 })
 
-const DatepickerProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const DatepickerProvider: React.FC<{
+  children: React.ReactNode
+  locale: Locale
+}> = ({ children, locale }) => {
   const [currentDate, setCurrentDate] = useState(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>()
 
   const daysOfMonth = useMemo(() => {
     const numDays = daysInMonth(
@@ -28,7 +34,7 @@ const DatepickerProvider: React.FC<{ children: React.ReactNode }> = ({
     return Array.from({ length: numDays }, (_, index) => index + 1)
   }, [currentDate])
 
-  const daysOfWeek = useMemo(() => daysOfTheWeek('en-US', 'short'), [])
+  const daysOfWeek = useMemo(() => daysOfTheWeek(locale, 'short', 4), [locale])
 
   const value = useMemo(
     () => ({
@@ -36,8 +42,10 @@ const DatepickerProvider: React.FC<{ children: React.ReactNode }> = ({
       setCurrentDate,
       daysOfMonth,
       daysOfWeek,
+      selectedDate,
+      setSelectedDate,
     }),
-    [currentDate, daysOfMonth, daysOfWeek]
+    [currentDate, daysOfMonth, daysOfWeek, selectedDate]
   )
 
   return (

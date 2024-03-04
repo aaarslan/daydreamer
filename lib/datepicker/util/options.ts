@@ -1,4 +1,4 @@
-enum LOCALE_CALENDARS {
+export enum LOCALE_CALENDARS {
   buddhist = 'buddhist',
   chinese = 'chinese',
   coptic = 'coptic',
@@ -18,32 +18,3 @@ enum LOCALE_CALENDARS {
   persian = 'persian',
   roc = 'roc',
 }
-
-interface LOCALE_CALENDAR_OPTIONS {
-  firstDayOfWeek: number
-  monthNames: string[]
-  monthNamesShort: string[]
-  dayNames: string[]
-  dayNamesShort: string[]
-  dayNamesMin: string[]
-  calendar: LOCALE_CALENDARS
-}
-
-interface LOCALE_DATE_OPTIONS {
-  format: string
-  separator: string
-  days: string[]
-  months: string[]
-  amPm: string[]
-}
-
-interface LOCALE_OPTIONS {
-  calendar: LOCALE_CALENDAR_OPTIONS
-  date: LOCALE_DATE_OPTIONS
-}
-
-interface DATEPICKER_OPTIONS {
-  locale: LOCALE_OPTIONS
-}
-
-export type { DATEPICKER_OPTIONS }

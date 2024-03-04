@@ -1,76 +1,73 @@
-import { useContext } from 'react'
+import React, { useContext } from 'react'
+import './datepicker.css'
 import { DatepickerContext } from './provider'
+import { getDaysForMonthView, isSameDay, isToday, isWeekend } from './util'
 
-const DatepickerComponent = () => {
-  const { currentDate, setCurrentDate, daysOfMonth, daysOfWeek } =
-    useContext(DatepickerContext)
+const DatepickerComponent: React.FC = () => {
+  const {
+    currentDate,
+    setCurrentDate,
+    daysOfWeek,
+    selectedDate,
+    setSelectedDate,
+  } = useContext(DatepickerContext)
 
   const handleMonthChange = (offset: number) => {
-    const newDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + offset,
-      1
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + offset, 1)
     )
-    setCurrentDate(newDate)
   }
 
-  const firstDayOfMonthIndex = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    1
-  ).getDay()
-  const daysFromPreviousMonth =
-    firstDayOfMonthIndex === 0 ? 6 : firstDayOfMonthIndex
-
-  const totalSlots =
-    Math.ceil((daysOfMonth.length + daysFromPreviousMonth) / 7) * 7
-
-  const daysToRender = Array.from({ length: totalSlots }).map((_, index) => {
-    const dayIndex = index - daysFromPreviousMonth
-    return dayIndex >= 0 && dayIndex < daysOfMonth.length
-      ? daysOfMonth[dayIndex]
-      : null
-  })
+  const daysToRender = getDaysForMonthView(currentDate)
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>
-            <button type="button" onClick={() => handleMonthChange(-1)}>
-              {'<'}
-            </button>
-          </th>
-          <th colSpan={5}>
-            {currentDate.toLocaleString('default', { month: 'long' })}{' '}
-            {currentDate.getFullYear()}
-          </th>
-          <th>
-            <button type="button" onClick={() => handleMonthChange(1)}>
-              {'>'}
-            </button>
-          </th>
-        </tr>
-        <tr>
-          {daysOfWeek.map((day, index) => (
-            <th key={index}>{day}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {Array.from({ length: totalSlots / 7 }).map((_, weekIndex) => (
-          <tr key={weekIndex}>
-            {daysToRender
-              .slice(weekIndex * 7, (weekIndex + 1) * 7)
-              .map((day, dayIndex) => (
-                <td key={dayIndex} className={!day ? 'empty-day' : ''}>
-                  {day}
-                </td>
-              ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="datepicker-grid">
+      <button
+        type="button"
+        className="month-change"
+        onClick={() => handleMonthChange(-1)}
+      >
+        {'<'}
+      </button>
+      <div className="current-month" style={{ gridColumn: 'span 5' }}>
+        {currentDate.toLocaleString('default', { month: 'long' })}{' '}
+        {currentDate.getFullYear()}
+      </div>
+      <button
+        type="button"
+        className="month-change"
+        onClick={() => handleMonthChange(1)}
+      >
+        {'>'}
+      </button>
+      {daysOfWeek.map((day, index) => (
+        <div key={index} className="day-of-week">
+          {day}
+        </div>
+      ))}
+      {daysToRender.map((date, index) => {
+        const isInCurrentMonth = date.getMonth() === currentDate.getMonth()
+        const isSelected = selectedDate && isSameDay(selectedDate, date)
+        const isCurrentDay = isToday(date)
+        const isWeekendDay = isWeekend(date.getDay())
+
+        const dayClass = `day ${!isInCurrentMonth ? 'overflow-day' : ''} ${
+          isSelected ? 'selected' : ''
+        } ${isCurrentDay ? 'today' : ''} ${isWeekendDay ? 'weekend' : ''}`
+
+        return (
+          <div
+            key={index}
+            className={dayClass}
+            onClick={() =>
+              isInCurrentMonth && setSelectedDate && setSelectedDate(date)
+            }
+          >
+            {date.getDate()}
+          </div>
+        )
+      })}
+    </div>
   )
 }
 

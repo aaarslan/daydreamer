@@ -3,7 +3,7 @@ import { DatepickerProvider } from './provider'
 
 function Datepicker() {
   return (
-    <DatepickerProvider>
+    <DatepickerProvider locale={'en-US'}>
       <DatepickerComponent />
     </DatepickerProvider>
   )

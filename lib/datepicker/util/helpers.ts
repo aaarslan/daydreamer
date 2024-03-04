@@ -1,29 +1,41 @@
-import { Locale } from './types'
+import type { Locale } from './index'
+
+interface DaysOfTheWeekOptions {
+  locale: Locale
+  format?: 'long' | 'short' | 'narrow'
+}
+
+interface DaysInMonthOptions {
+  locale: Locale
+  day: '2-digit' | 'numeric'
+}
 
 function daysInMonth(month: number, year: number): number {
   return new Date(year, month + 1, 0).getDate()
 }
 
-export interface DaysOfTheWeekOptions {
-  locale: Locale
-  format?: 'long' | 'short' | 'narrow'
-}
-
 function daysOfTheWeek(
   locale: Locale,
-  format: 'long' | 'short' | 'narrow' = 'narrow'
+  format: 'long' | 'short' | 'narrow' = 'narrow',
+  firstDayOfWeek: number = 1
 ): string[] {
-  return Array.from({ length: 7 }, (_, i) =>
-    new Date(1970, 0, i + 4).toLocaleDateString(locale, { weekday: format })
-  )
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const day = new Date(
+      1970,
+      0,
+      i + firstDayOfWeek + 4 - new Date(1970, 0, 1).getDay()
+    )
+    return new Intl.DateTimeFormat(locale, { weekday: format }).format(day)
+  })
+  return days
 }
 
-function isToday(day: number, month: number, year: number): boolean {
+function isToday(date: Date): boolean {
   const today = new Date()
   return (
-    day === today.getDate() &&
-    month === today.getMonth() &&
-    year === today.getFullYear()
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
   )
 }
 
@@ -120,6 +132,44 @@ function isDateIncluded(date: Date, includedDates: Date[]): boolean {
   return includedDates.some((includedDate) => isSameDay(date, includedDate))
 }
 
+function getDaysForMonthView(currentDate: Date): Date[] {
+  const year = currentDate.getFullYear()
+  const month = currentDate.getMonth()
+  const firstDayOfMonth = new Date(year, month, 1)
+  const firstDayOfWeek = firstDayOfMonth.getDay()
+  const previousMonthDaysToShow = firstDayOfWeek === 6 ? 6 : firstDayOfWeek
+  const nextMonthDaysToShow =
+    42 - (previousMonthDaysToShow + daysInMonth(month, year))
+  const previousMonth = new Date(year, month - 1, 1)
+  const daysInPreviousMonth = daysInMonth(
+    previousMonth.getMonth(),
+    previousMonth.getFullYear()
+  )
+  const previousMonthOverflow = Array.from(
+    { length: previousMonthDaysToShow },
+    (_, i) => {
+      return new Date(
+        year,
+        month - 1,
+        daysInPreviousMonth - previousMonthDaysToShow + i + 1
+      )
+    }
+  )
+  const currentMonthDays = Array.from(
+    { length: daysInMonth(month, year) },
+    (_, i) => {
+      return new Date(year, month, i + 1)
+    }
+  )
+  const nextMonthOverflow = Array.from(
+    { length: nextMonthDaysToShow },
+    (_, i) => {
+      return new Date(year, month + 1, i + 1)
+    }
+  )
+  return [...previousMonthOverflow, ...currentMonthDays, ...nextMonthOverflow]
+}
+
 export {
   daysInMonth,
   daysOfTheWeek,
@@ -145,4 +195,7 @@ export {
   isDateDisabled,
   isDateExcluded,
   isDateIncluded,
+  getDaysForMonthView,
 }
+
+export type { DaysOfTheWeekOptions, DaysInMonthOptions }
