@@ -4,12 +4,51 @@ import Calendar from './components/calendar/calendar'
 import { InputField } from './components/input/input'
 import './datepicker.css'
 
+import useDate from './hooks/useDate'
 import { DatepickerContext } from './provider'
 
 const DatepickerComponent: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const { open, setOpen } = useContext(DatepickerContext)
+  const {
+    open,
+    selectedDate,
+    setSelectedDate,
+    setOpen,
+    setInputValue,
+    inputValue,
+  } = useContext(DatepickerContext)
+  const { parseDateFromString } = useDate(null)
+
+  const handleInputBlur = (_event: React.FocusEvent<HTMLInputElement>) => {
+    setTimeout(() => {
+      if (!dialogRef.current?.contains(document.activeElement)) {
+        setOpen(false)
+      }
+    }, 0)
+  }
+
+  const { formatDate } = useDate(null)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value
+    const dateParts = rawValue.match(/(\d{2})\/(\d{2})\/(\d{4})/)
+    if (dateParts) {
+      const [, day, month, year] = dateParts.map(Number)
+      const parsedDate = new Date(year, month - 1, day)
+      if (!Number.isNaN(parsedDate.getTime())) {
+        setSelectedDate(parsedDate)
+
+        const formattedDate = `${day}/${month}/${year}`
+        setInputValue(formattedDate)
+        setSelectedDate(parseDateFromString(formattedDate))
+      } else {
+        // Handle invalid date, e.g., show an error or clear the input
+        setInputValue(selectedDate ? formatDate(selectedDate) : '')
+        console.log('Invalid date')
+      }
+    }
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -32,6 +71,9 @@ const DatepickerComponent: React.FC = () => {
         aria-expanded={open}
         locale={Locales.enUS}
         ref={inputRef}
+        value={inputValue}
+        onChange={handleChange}
+        onBlur={handleInputBlur}
         suffix={
           <button type="button" onClick={() => setOpen(true)}>
             Open
