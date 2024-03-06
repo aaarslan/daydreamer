@@ -1,4 +1,4 @@
-import type { Locale } from './index'
+import { Locale } from 'date-fns'
 
 interface DaysOfTheWeekOptions {
   locale: Locale
@@ -15,7 +15,7 @@ function daysInMonth(month: number, year: number): number {
 }
 
 function daysOfTheWeek(
-  locale: Locale,
+  locale: Locale['code'],
   format: 'long' | 'short' | 'narrow' = 'narrow',
   firstDayOfWeek: number = 1
 ): string[] {

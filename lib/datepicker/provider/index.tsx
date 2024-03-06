@@ -1,13 +1,18 @@
+import { Locale } from 'date-fns'
 import React, { createContext, useMemo, useState } from 'react'
-import { Locale, daysInMonth, daysOfTheWeek } from '../util'
+import { daysInMonth, daysOfTheWeek } from '../util'
 
 export interface DatepickerContextProps {
   currentDate: Date
   setCurrentDate: (date: Date) => void
   daysOfMonth: number[]
   daysOfWeek: string[]
-  selectedDate?: Date
-  setSelectedDate?: (date: Date) => void
+  selectedDate: Date | null
+  setSelectedDate: (date: Date | null) => void
+  open: boolean
+  setOpen: (open: boolean) => void
+  inputValue: string
+  setInputValue: (value: string) => void
 }
 
 const DatepickerContext = createContext<DatepickerContextProps>({
@@ -15,8 +20,12 @@ const DatepickerContext = createContext<DatepickerContextProps>({
   setCurrentDate: () => {},
   daysOfMonth: [],
   daysOfWeek: [],
-  selectedDate: undefined,
+  selectedDate: null,
   setSelectedDate: () => {},
+  open: false,
+  setOpen: () => {},
+  inputValue: '',
+  setInputValue: () => {},
 })
 
 const DatepickerProvider: React.FC<{
@@ -24,7 +33,10 @@ const DatepickerProvider: React.FC<{
   locale: Locale
 }> = ({ children, locale }) => {
   const [currentDate, setCurrentDate] = useState(new Date())
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>()
+  const [selectedDate, setSelectedDate] =
+    useState<DatepickerContextProps['selectedDate']>(null)
+  const [open, setOpen] = useState(false)
+  const [inputValue, setInputValue] = useState('')
 
   const daysOfMonth = useMemo(() => {
     const numDays = daysInMonth(
@@ -34,7 +46,10 @@ const DatepickerProvider: React.FC<{
     return Array.from({ length: numDays }, (_, index) => index + 1)
   }, [currentDate])
 
-  const daysOfWeek = useMemo(() => daysOfTheWeek(locale, 'short', 4), [locale])
+  const daysOfWeek = useMemo(
+    () => daysOfTheWeek(locale.code, 'short', 4),
+    [locale]
+  )
 
   const value = useMemo(
     () => ({
@@ -44,8 +59,12 @@ const DatepickerProvider: React.FC<{
       daysOfWeek,
       selectedDate,
       setSelectedDate,
+      open,
+      setOpen,
+      inputValue,
+      setInputValue,
     }),
-    [currentDate, daysOfMonth, daysOfWeek, selectedDate]
+    [currentDate, daysOfMonth, daysOfWeek, selectedDate, open, inputValue]
   )
 
   return (

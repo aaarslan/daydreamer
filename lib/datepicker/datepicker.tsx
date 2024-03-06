@@ -1,73 +1,57 @@
-import React, { useContext } from 'react'
+import * as Locales from 'date-fns/locale'
+import React, { useEffect, useRef, useContext } from 'react'
+import Calendar from './components/calendar/calendar'
+import { InputField } from './components/input/input'
 import './datepicker.css'
+
 import { DatepickerContext } from './provider'
-import { getDaysForMonthView, isSameDay, isToday, isWeekend } from './util'
 
 const DatepickerComponent: React.FC = () => {
-  const {
-    currentDate,
-    setCurrentDate,
-    daysOfWeek,
-    selectedDate,
-    setSelectedDate,
-  } = useContext(DatepickerContext)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const { open, setOpen } = useContext(DatepickerContext)
 
-  const handleMonthChange = (offset: number) => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + offset, 1)
-    )
-  }
-
-  const daysToRender = getDaysForMonthView(currentDate)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        !dialogRef.current?.contains(event.target as Node) &&
+        !inputRef.current?.contains(event.target as Node)
+      ) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [setOpen])
 
   return (
-    <div className="datepicker-grid">
-      <button
-        type="button"
-        className="month-change"
-        onClick={() => handleMonthChange(-1)}
-      >
-        {'<'}
-      </button>
-      <div className="current-month" style={{ gridColumn: 'span 5' }}>
-        {currentDate.toLocaleString('default', { month: 'long' })}{' '}
-        {currentDate.getFullYear()}
-      </div>
-      <button
-        type="button"
-        className="month-change"
-        onClick={() => handleMonthChange(1)}
-      >
-        {'>'}
-      </button>
-      {daysOfWeek.map((day, index) => (
-        <div key={index} className="day-of-week">
-          {day}
-        </div>
-      ))}
-      {daysToRender.map((date, index) => {
-        const isInCurrentMonth = date.getMonth() === currentDate.getMonth()
-        const isSelected = selectedDate && isSameDay(selectedDate, date)
-        const isCurrentDay = isToday(date)
-        const isWeekendDay = isWeekend(date.getDay())
-
-        const dayClass = `day ${!isInCurrentMonth ? 'overflow-day' : ''} ${
-          isSelected ? 'selected' : ''
-        } ${isCurrentDay ? 'today' : ''} ${isWeekendDay ? 'weekend' : ''}`
-
-        return (
-          <div
-            key={index}
-            className={dayClass}
-            onClick={() =>
-              isInCurrentMonth && setSelectedDate && setSelectedDate(date)
-            }
-          >
-            {date.getDate()}
-          </div>
-        )
-      })}
-    </div>
+    <>
+      <InputField
+        type="text"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        locale={Locales.enUS}
+        ref={inputRef}
+        suffix={
+          <button type="button" onClick={() => setOpen(true)}>
+            Open
+          </button>
+        }
+      />
+      {open && (
+        <dialog
+          id="datepicker-dialog"
+          className="datepicker-dialog"
+          open
+          ref={dialogRef}
+          aria-modal="true"
+          role="dialog"
+          tabIndex={-1}
+        >
+          <Calendar />
+        </dialog>
+      )}
+    </>
   )
 }
 

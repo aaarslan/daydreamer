@@ -1,9 +1,10 @@
+import { enUS } from 'date-fns/locale'
 import DatepickerComponent from './datepicker'
 import { DatepickerProvider } from './provider'
 
 function Datepicker() {
   return (
-    <DatepickerProvider locale={'en-US'}>
+    <DatepickerProvider locale={enUS}>
       <DatepickerComponent />
     </DatepickerProvider>
   )
