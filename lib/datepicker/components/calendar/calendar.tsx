@@ -1,6 +1,11 @@
+import {
+  eachDayOfInterval,
+  endOfMonth,
+  isSameDay,
+  startOfMonth,
+} from 'date-fns'
 import React, { useContext } from 'react'
 import { DatepickerContext } from '../../provider'
-import { getDaysForMonthView, isSameDay, isToday, isWeekend } from '../../util'
 
 const Calendar: React.FC = () => {
   const {
@@ -9,6 +14,7 @@ const Calendar: React.FC = () => {
     daysOfWeek,
     selectedDate,
     setSelectedDate,
+    locale,
   } = useContext(DatepickerContext)
 
   const handleMonthChange = (offset: number) => {
@@ -17,7 +23,10 @@ const Calendar: React.FC = () => {
     )
   }
 
-  const daysToRender = getDaysForMonthView(currentDate)
+  const start = startOfMonth(currentDate)
+  const end = endOfMonth(currentDate)
+  const daysToRender = eachDayOfInterval({ start, end })
+
   return (
     <div className="datepicker-grid">
       <button
@@ -28,7 +37,7 @@ const Calendar: React.FC = () => {
         {'<'}
       </button>
       <div className="current-month" style={{ gridColumn: 'span 5' }}>
-        {currentDate.toLocaleString('default', { month: 'long' })}{' '}
+        {currentDate.toLocaleString(locale.code, { month: 'long' })}{' '}
         {currentDate.getFullYear()}
       </div>
       <button
@@ -38,28 +47,36 @@ const Calendar: React.FC = () => {
       >
         {'>'}
       </button>
-      {daysOfWeek.map((day, index) => (
-        <div key={index} className="day-of-week">
-          {day}
-        </div>
-      ))}
+      {daysOfWeek.map(
+        (
+          day:
+            | string
+            | number
+            | boolean
+            | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+            | Iterable<React.ReactNode>
+            | React.ReactPortal
+            | null
+            | undefined,
+          index: React.Key | null | undefined
+        ) => (
+          <div key={index} className="day-of-week">
+            {day}
+          </div>
+        )
+      )}
       {daysToRender.map((date, index) => {
-        const isInCurrentMonth = date.getMonth() === currentDate.getMonth()
         const isSelected = selectedDate && isSameDay(selectedDate, date)
-        const isCurrentDay = isToday(date)
-        const isWeekendDay = isWeekend(date.getDay())
-
-        const dayClass = `day ${!isInCurrentMonth ? 'overflow-day' : ''} ${
-          isSelected ? 'selected' : ''
-        } ${isCurrentDay ? 'today' : ''} ${isWeekendDay ? 'weekend' : ''}`
+        const isCurrentDay = isSameDay(date, new Date())
+        const dayClass = `day ${isSelected ? 'selected' : ''} ${
+          isCurrentDay ? 'today' : ''
+        }`
 
         return (
           <div
             key={index}
             className={dayClass}
-            onClick={() =>
-              isInCurrentMonth && setSelectedDate && setSelectedDate(date)
-            }
+            onClick={() => setSelectedDate(date)}
           >
             {date.getDate()}
           </div>
@@ -69,4 +86,4 @@ const Calendar: React.FC = () => {
   )
 }
 
-export default Calendar
+export { Calendar }

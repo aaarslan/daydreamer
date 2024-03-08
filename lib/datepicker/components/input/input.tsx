@@ -1,46 +1,25 @@
-import { Locale } from 'date-fns'
-import React, { forwardRef, ComponentPropsWithRef } from 'react'
+import React, { forwardRef, InputHTMLAttributes } from 'react'
 
-export interface InputFieldProps
-  extends Omit<ComponentPropsWithRef<'input'>, 'prefix' | 'onChange'> {
-  type: 'text'
+export interface CustomProps {
   invalid?: boolean
   ariaLabel?: string
-  onRenderPrefix?: () => React.ReactNode
-  onRenderSuffix?: () => React.ReactNode
-  prefix?: React.ReactNode | null
+  prefix?: React.ReactNode
   suffix?: React.ReactNode
   label?: string
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-  locale?: Locale
 }
 
-const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
-  (props, ref) => {
-    const {
-      label,
-      prefix,
-      onRenderPrefix,
-      suffix,
-      onRenderSuffix,
-      onChange,
-      ...rest
-    } = props
+export type InputFieldProps = CustomProps &
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix' | 'suffix'>
 
+const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
+  ({ label, prefix, suffix, ...inputProps }, ref) => {
     return (
       <div>
         {label && <label>{label}</label>}
         <div>
           {prefix && <span>{prefix}</span>}
-          {onRenderPrefix?.()}
-          <input
-            ref={ref}
-            onChange={onChange}
-            placeholder={'mm/dd/yyyy'}
-            {...rest}
-          />
+          <input ref={ref} {...inputProps} />
           {suffix && <span>{suffix}</span>}
-          {onRenderSuffix?.()}
         </div>
       </div>
     )

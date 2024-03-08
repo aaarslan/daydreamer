@@ -1,31 +1,37 @@
-import { Locale } from 'date-fns'
+import {
+  Locale,
+  eachDayOfInterval,
+  endOfWeek,
+  format,
+  startOfWeek,
+} from 'date-fns'
+import { enUS } from 'date-fns/locale'
 import React, { createContext, useMemo, useState } from 'react'
-import { daysInMonth, daysOfTheWeek } from '../util'
 
 export interface DatepickerContextProps {
+  daysOfWeek: string[]
   currentDate: Date
   setCurrentDate: (date: Date) => void
-  daysOfMonth: number[]
-  daysOfWeek: string[]
   selectedDate: Date | null
   setSelectedDate: (date: Date | null) => void
   open: boolean
   setOpen: (open: boolean) => void
   inputValue: string
   setInputValue: (value: string) => void
+  locale: Locale
 }
 
 const DatepickerContext = createContext<DatepickerContextProps>({
+  daysOfWeek: [],
   currentDate: new Date(),
   setCurrentDate: () => {},
-  daysOfMonth: [],
-  daysOfWeek: [],
   selectedDate: null,
   setSelectedDate: () => {},
   open: false,
   setOpen: () => {},
   inputValue: '',
   setInputValue: () => {},
+  locale: enUS,
 })
 
 const DatepickerProvider: React.FC<{
@@ -33,39 +39,30 @@ const DatepickerProvider: React.FC<{
   locale: Locale
 }> = ({ children, locale }) => {
   const [currentDate, setCurrentDate] = useState(new Date())
-  const [selectedDate, setSelectedDate] =
-    useState<DatepickerContextProps['selectedDate']>(null)
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [open, setOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
 
-  const daysOfMonth = useMemo(() => {
-    const numDays = daysInMonth(
-      currentDate.getMonth(),
-      currentDate.getFullYear()
+  const daysOfWeek = useMemo(() => {
+    const start = startOfWeek(new Date(), { locale })
+    const end = endOfWeek(new Date(), { locale })
+    return eachDayOfInterval({ start, end }).map((day) =>
+      format(day, 'eee', { locale })
     )
-    return Array.from({ length: numDays }, (_, index) => index + 1)
-  }, [currentDate])
+  }, [locale])
 
-  const daysOfWeek = useMemo(
-    () => daysOfTheWeek(locale.code, 'short', 4),
-    [locale]
-  )
-
-  const value = useMemo(
-    () => ({
-      currentDate,
-      setCurrentDate,
-      daysOfMonth,
-      daysOfWeek,
-      selectedDate,
-      setSelectedDate,
-      open,
-      setOpen,
-      inputValue,
-      setInputValue,
-    }),
-    [currentDate, daysOfMonth, daysOfWeek, selectedDate, open, inputValue]
-  )
+  const value = {
+    currentDate,
+    setCurrentDate,
+    selectedDate,
+    setSelectedDate,
+    open,
+    setOpen,
+    inputValue,
+    setInputValue,
+    locale,
+    daysOfWeek,
+  }
 
   return (
     <DatepickerContext.Provider value={value}>

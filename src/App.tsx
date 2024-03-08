@@ -1,4 +1,4 @@
-import Datepicker from '../lib/datepicker'
+import { Datepicker } from '../lib/datepicker'
 function App() {
   return (
     <>
