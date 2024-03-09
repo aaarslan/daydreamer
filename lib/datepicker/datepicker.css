@@ -7,6 +7,21 @@
   border-radius: 8px;
 }
 
+@media (max-width: 600px) {
+  .datepicker-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 10px;
+
+  }
+
+  .day,
+  .month-change,
+  .current-month {
+    font-size: 14px;
+  }
+}
+
 .month-change {
   background: none;
   border: none;
@@ -61,4 +76,25 @@
 
 .overflow-day {
   opacity: 0.5;
+}
+
+.day,
+.month-change {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px;
+}
+
+.datepicker-grid {
+  transition: opacity 0.3s ease;
+}
+
+.calendar-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.calendar-visible {
+  opacity: 1;
+  visibility: visible;
 }

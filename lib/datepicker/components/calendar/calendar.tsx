@@ -1,13 +1,20 @@
+/**
+ * Calendar Component
+ *
+ * Renders the calendar grid, including navigation buttons and day cells.
+ * It uses the DatepickerContext for accessing and modifying the current and selected dates.
+ */
 import {
   eachDayOfInterval,
   endOfMonth,
+  format,
   isSameDay,
   startOfMonth,
 } from 'date-fns'
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { DatepickerContext } from '../../provider'
 
-const Calendar: React.FC = () => {
+const Calendar: React.FC = React.memo(() => {
   const {
     currentDate,
     setCurrentDate,
@@ -23,9 +30,15 @@ const Calendar: React.FC = () => {
     )
   }
 
-  const start = startOfMonth(currentDate)
-  const end = endOfMonth(currentDate)
-  const daysToRender = eachDayOfInterval({ start, end })
+  const handleTodayClick = () => {
+    setCurrentDate(new Date())
+  }
+
+  const daysToRender = useMemo(() => {
+    const start = startOfMonth(currentDate)
+    const end = endOfMonth(currentDate)
+    return eachDayOfInterval({ start, end })
+  }, [currentDate])
 
   return (
     <div className="datepicker-grid">
@@ -37,8 +50,8 @@ const Calendar: React.FC = () => {
         {'<'}
       </button>
       <div className="current-month" style={{ gridColumn: 'span 5' }}>
-        {currentDate.toLocaleString(locale.code, { month: 'long' })}{' '}
-        {currentDate.getFullYear()}
+        {format(currentDate, 'MMMM', { locale: locale })}{' '}
+        {format(currentDate, 'yyyy', { locale: locale })}
       </div>
       <button
         type="button"
@@ -58,7 +71,7 @@ const Calendar: React.FC = () => {
             | React.ReactPortal
             | null
             | undefined,
-          index: React.Key | null | undefined
+          index: React.Key
         ) => (
           <div key={index} className="day-of-week">
             {day}
@@ -82,8 +95,11 @@ const Calendar: React.FC = () => {
           </div>
         )
       })}
+      <button type="button" className="month-change" onClick={handleTodayClick}>
+        Today
+      </button>
     </div>
   )
-}
+})
 
 export { Calendar }

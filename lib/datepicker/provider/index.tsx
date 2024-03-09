@@ -5,8 +5,13 @@ import {
   format,
   startOfWeek,
 } from 'date-fns'
-import { enUS } from 'date-fns/locale'
-import React, { createContext, useMemo, useState } from 'react'
+
+import React, {
+  createContext,
+  useMemo,
+  useState,
+  PropsWithChildren,
+} from 'react'
 
 export interface DatepickerContextProps {
   daysOfWeek: string[]
@@ -18,7 +23,12 @@ export interface DatepickerContextProps {
   setOpen: (open: boolean) => void
   inputValue: string
   setInputValue: (value: string) => void
-  locale: Locale
+  locale?: Locale
+  setLocale?: (locale: Locale) => void
+}
+
+export interface DatepickerProviderProps {
+  initialLocale?: Locale
 }
 
 const DatepickerContext = createContext<DatepickerContextProps>({
@@ -31,44 +41,44 @@ const DatepickerContext = createContext<DatepickerContextProps>({
   setOpen: () => {},
   inputValue: '',
   setInputValue: () => {},
-  locale: enUS,
+  locale: undefined,
+  setLocale: () => {},
 })
 
-const DatepickerProvider: React.FC<{
-  children: React.ReactNode
-  locale: Locale
-}> = ({ children, locale }) => {
-  const [currentDate, setCurrentDate] = useState(new Date())
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [open, setOpen] = useState(false)
-  const [inputValue, setInputValue] = useState('')
+const DatepickerProvider: React.FC<PropsWithChildren<DatepickerProviderProps>> =
+  ({ children, initialLocale }) => {
+    const [currentDate, setCurrentDate] = useState(new Date())
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+    const [open, setOpen] = useState(false)
+    const [inputValue, setInputValue] = useState('')
+    const [locale, setLocale] = useState<Locale | undefined>(initialLocale)
+    const daysOfWeek = useMemo(() => {
+      const start = startOfWeek(new Date(), { locale })
+      const end = endOfWeek(new Date(), { locale })
+      return eachDayOfInterval({ start, end }).map((day) =>
+        format(day, 'eeee', { locale })
+      )
+    }, [locale])
 
-  const daysOfWeek = useMemo(() => {
-    const start = startOfWeek(new Date(), { locale })
-    const end = endOfWeek(new Date(), { locale })
-    return eachDayOfInterval({ start, end }).map((day) =>
-      format(day, 'eee', { locale })
+    const value = {
+      currentDate,
+      setCurrentDate,
+      selectedDate,
+      setSelectedDate,
+      open,
+      setOpen,
+      inputValue,
+      setInputValue,
+      locale,
+      setLocale,
+      daysOfWeek,
+    }
+
+    return (
+      <DatepickerContext.Provider value={value}>
+        {children}
+      </DatepickerContext.Provider>
     )
-  }, [locale])
-
-  const value = {
-    currentDate,
-    setCurrentDate,
-    selectedDate,
-    setSelectedDate,
-    open,
-    setOpen,
-    inputValue,
-    setInputValue,
-    locale,
-    daysOfWeek,
   }
-
-  return (
-    <DatepickerContext.Provider value={value}>
-      {children}
-    </DatepickerContext.Provider>
-  )
-}
 
 export { DatepickerContext, DatepickerProvider }
