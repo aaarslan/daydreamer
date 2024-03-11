@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { format, parse } from 'date-fns'
 import React, { useRef, useContext, useCallback } from 'react'
 import { Calendar } from './components/calendar/calendar'
 import { InputField } from './components/input/input'
@@ -21,6 +21,9 @@ const DatepickerComponent: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const toggleOpen = useCallback(() => setOpen(!open), [open, setOpen])
+
+  const result = parse(inputValue, 'P', new Date(), { locale: locale })
+  console.log(result)
 
   return (
     <>

@@ -49,7 +49,7 @@ const DatepickerProvider: React.FC<PropsWithChildren<DatepickerProviderProps>> =
   ({ children, initialLocale }) => {
     const [currentDate, setCurrentDate] = useState(new Date())
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState<boolean>(false)
     const [inputValue, setInputValue] = useState('')
     const [locale, setLocale] = useState<Locale | undefined>(initialLocale)
     const daysOfWeek = useMemo(() => {
