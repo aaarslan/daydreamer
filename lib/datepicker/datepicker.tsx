@@ -1,7 +1,7 @@
-import { format, parse } from 'date-fns'
-import React, { useRef, useContext, useCallback } from 'react'
+import { format, isValid, parse } from 'date-fns'
+import React, { useContext, useCallback, useRef } from 'react'
 import { Calendar } from './components/calendar/calendar'
-import { InputField } from './components/input/input'
+
 import { useLocale } from './hooks/useLocale'
 import { DatepickerContext } from './provider'
 
@@ -13,35 +13,59 @@ const DatepickerComponent: React.FC = () => {
     setInputValue,
     locale,
     selectedDate,
-    currentDate,
+    setSelectedDate,
   } = useContext(DatepickerContext)
 
+  const inputRef = useRef<HTMLInputElement>(null)
   useLocale()
 
-  const inputRef = useRef<HTMLInputElement>(null)
+  const dateFormat = 'P'
+  const maxLength = format(new Date(), dateFormat, { locale }).length
 
   const toggleOpen = useCallback(() => setOpen(!open), [open, setOpen])
 
-  const result = parse(inputValue, 'P', new Date(), { locale: locale })
-  console.log(result)
+  const handleInputChange = useCallback(
+    (value: string) => {
+      if (value.length <= maxLength) {
+        setInputValue(value)
+        const parsedDate = parse(value, dateFormat, new Date(), { locale })
+        if (isValid(parsedDate)) {
+          setSelectedDate(parsedDate)
+        } else {
+          setSelectedDate(null)
+        }
+      }
+    },
+    [setInputValue, setSelectedDate, maxLength, locale]
+  )
+
+  const handleCalendarClick = useCallback(
+    (date: Date) => {
+      setSelectedDate(date)
+      setInputValue(format(date, dateFormat, { locale }))
+      toggleOpen()
+    },
+    [setSelectedDate, setInputValue, locale, toggleOpen]
+  )
 
   return (
     <>
-      <InputField
-        type="text"
+      <input
         ref={inputRef}
-        value={inputValue}
-        placeholder={format(selectedDate ? selectedDate : currentDate, 'PPPP', {
-          locale: locale,
-        })}
-        onChange={(e) => setInputValue(e.target.value)}
-        suffix={
-          <button type="button" onClick={toggleOpen}>
-            Open
-          </button>
+        type="text"
+        value={
+          selectedDate
+            ? format(selectedDate, dateFormat, { locale })
+            : inputValue
         }
+        onChange={(e) => handleInputChange(e.target.value)}
+        maxLength={maxLength}
+        placeholder={format(new Date(), dateFormat, { locale })}
       />
-      {open && <Calendar />}
+      <button type="button" onClick={toggleOpen}>
+        Open
+      </button>
+      {open && <Calendar onDateSelect={handleCalendarClick} />}
     </>
   )
 }
