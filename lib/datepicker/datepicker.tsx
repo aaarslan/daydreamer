@@ -1,7 +1,7 @@
-import { format, isValid, parse } from 'date-fns'
-import React, { useContext, useCallback, useRef } from 'react'
+import { format, formatISO, isValid, parseISO, startOfDay } from 'date-fns'
+import React, { useContext, useCallback } from 'react'
 import { Calendar } from './components/calendar/calendar'
-
+import DateInput from './components/dateInput/dateInput'
 import { useLocale } from './hooks/useLocale'
 import { DatepickerContext } from './provider'
 
@@ -16,28 +16,37 @@ const DatepickerComponent: React.FC = () => {
     setSelectedDate,
   } = useContext(DatepickerContext)
 
-  const inputRef = useRef<HTMLInputElement>(null)
   useLocale()
 
   const dateFormat = 'P'
-  const maxLength = format(new Date(), dateFormat, { locale }).length
 
   const toggleOpen = useCallback(() => setOpen(!open), [open, setOpen])
 
   const handleInputChange = useCallback(
     (value: string) => {
-      if (value.length <= maxLength) {
-        setInputValue(value)
-        const parsedDate = parse(value, dateFormat, new Date(), { locale })
-        if (isValid(parsedDate)) {
-          setSelectedDate(parsedDate)
-        } else {
-          setSelectedDate(null)
-        }
+      setInputValue(value)
+      const parsedDate = parseISO(value)
+      if (isValid(parsedDate)) {
+        setSelectedDate(startOfDay(parsedDate))
+      } else {
+        // Set to null or handle invalid input as needed
+        setSelectedDate(null)
       }
     },
-    [setInputValue, setSelectedDate, maxLength, locale]
+    [setInputValue, setSelectedDate]
   )
+
+  const handleInputBlur = useCallback(() => {
+    // Validate the current input value and sanitize if necessary
+    if (!isValid(parseISO(inputValue))) {
+      setInputValue('')
+      setSelectedDate(null)
+    }
+  }, [inputValue, setInputValue, setSelectedDate])
+
+  const formattedDate = selectedDate
+    ? formatISO(selectedDate, { representation: 'date' })
+    : ''
 
   const handleCalendarClick = useCallback(
     (date: Date) => {
@@ -50,19 +59,8 @@ const DatepickerComponent: React.FC = () => {
 
   return (
     <>
-      <input
-        ref={inputRef}
-        type="text"
-        value={
-          selectedDate
-            ? format(selectedDate, dateFormat, { locale })
-            : inputValue
-        }
-        onChange={(e) => handleInputChange(e.target.value)}
-        maxLength={maxLength}
-        placeholder={format(new Date(), dateFormat, { locale })}
-      />
-      <button type="button" onClick={toggleOpen}>
+      <DateInput value={inputValue} onChange={handleInputChange} />
+      <button type="button" onClick={() => setOpen(!open)}>
         Open
       </button>
       {open && <Calendar onDateSelect={handleCalendarClick} />}
