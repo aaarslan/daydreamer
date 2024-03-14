@@ -1,118 +1,107 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react'
+import { format, getDaysInMonth } from 'date-fns'
+import React, { useContext, useState } from 'react'
 import { DatepickerContext } from '../../provider'
 
-const getMaxDay = (year: number, month: number): number => {
-  return new Date(year, month, 0).getDate()
-}
+const DateInput: React.FC = () => {
+  const { selectedDate, setSelectedDate, locale } =
+    useContext(DatepickerContext)
 
-const isValidYearlessDate = (dateStr: string): boolean => {
-  const parts = dateStr.split('-').filter((part) => part !== '')
-  if (parts.length !== 2) return false
-
-  const month = parseInt(parts[0], 10)
-  const day = parseInt(parts[1], 10)
-  if (Number.isNaN(month) || Number.isNaN(day)) return false
-
-  if (month < 1 || month > 12 || day < 1 || day > getMaxDay(2000, month))
-    return false
-
-  return true
-}
-
-function debounce(func: (...args: any[]) => void, wait: number) {
-  let timeout: ReturnType<typeof setTimeout>
-  return function (this: any, ...args: any[]) {
-    clearTimeout(timeout)
-    timeout = setTimeout(() => func.apply(this, args), wait)
-  }
-}
-
-const isValidDate = (dateStr: string, separator: RegExp): boolean => {
-  const parts = dateStr.split(separator).filter(Boolean)
-  if (parts.length !== 3) return false
-
-  const year = parseInt(parts[0], 10)
-  const month = parseInt(parts[1], 10)
-  const day = parseInt(parts[2], 10)
-  if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day))
-    return false
-
-  if (month < 1 || month > 12 || day < 1 || day > getMaxDay(year, month))
-    return false
-
-  return true
-}
-
-type Props = {
-  value: string
-  onChange: (newValue: string) => void
-  placeholder?: string
-  separator?: '-' | '/' | '.'
-  validateYearlessDate?: boolean
-}
-
-const DateInput: React.FC<Props> = ({
-  value,
-  onChange,
-  placeholder = 'YYYY-MM-DD',
-  separator = '/',
-  validateYearlessDate = false,
-}) => {
-  const { inputValue, setInputValue } = useContext(DatepickerContext)
-
-  const [isValid, setIsValid] = useState(true)
-  const [errorMessage, setErrorMessage] = useState('')
-
-  useEffect(() => {
-    setInputValue(formatInput(value))
-  }, [value, setInputValue])
-
-  const formatInput = (newValue: string): string => {
-    return newValue
-      .replace(/[^0-9]/g, separator)
-      .replace(new RegExp(`\\${separator}{2,}`, 'g'), separator)
-  }
-
-  const validateAndFormatInput = useCallback(
-    debounce((newValue: string) => {
-      const formattedValue = formatInput(newValue)
-      let valid: boolean
-      if (validateYearlessDate) {
-        valid = isValidYearlessDate(
-          formattedValue.replace(new RegExp(`\\${separator}`, 'g'), '-')
-        )
-      } else {
-        valid = isValidDate(formattedValue, new RegExp(`\\${separator}`))
-      }
-      setInputValue(formattedValue)
-      setIsValid(valid)
-
-      if (valid) {
-        onChange(formattedValue)
-      } else {
-        setErrorMessage('Invalid date format.')
-      }
-    }, 10),
-    []
+  const [month, setMonth] = useState(
+    selectedDate ? selectedDate.getMonth() + 1 : ''
+  )
+  const [day, setDay] = useState(selectedDate ? selectedDate.getDate() : '')
+  const [year, setYear] = useState(
+    selectedDate ? selectedDate.getFullYear() : ''
   )
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value
-    validateAndFormatInput(newValue)
+  const updateSelectedDate = (y: number, m: number, d: number) => {
+    if (
+      y >= 1900 &&
+      y <= 3000 &&
+      m >= 1 &&
+      m <= 12 &&
+      d >= 1 &&
+      d <= getDaysInMonth(new Date(y, m - 1))
+    ) {
+      setSelectedDate(new Date(y, m - 1, d))
+    }
+  }
+
+  const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newMonth = e.target.value
+    setMonth(newMonth)
+    updateSelectedDate(
+      year ? parseInt(year.toString()) : new Date().getFullYear(),
+      parseInt(newMonth),
+      day ? parseInt(day.toString()) : 1
+    )
+  }
+
+  const handleDayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDay = e.target.value
+    setDay(newDay)
+    updateSelectedDate(
+      year ? parseInt(year.toString()) : new Date().getFullYear(),
+      month ? parseInt(month.toString()) : 1,
+      parseInt(newDay)
+    )
+  }
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newYear = e.target.value
+    setYear(newYear)
+    updateSelectedDate(
+      parseInt(newYear),
+      month ? parseInt(month.toString()) : 1,
+      day ? parseInt(day.toString()) : 1
+    )
   }
 
   return (
-    <div>
-      <input
-        type="text"
-        className={`input ${isValid ? 'valid' : 'invalid'}`}
-        value={inputValue}
-        onChange={handleChange}
-        placeholder={placeholder}
-      />
-      {!isValid && <div className="error-message">{errorMessage}</div>}
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <div>
+        <input
+          type="number"
+          value={month}
+          onChange={handleMonthChange}
+          min="1"
+          max="12"
+          placeholder={format(new Date(), 'MM', { locale })}
+        />
+      </div>
+      <div>
+        <input
+          type="number"
+          value={day}
+          onChange={handleDayChange}
+          min="1"
+          max={getDaysInMonth(
+            new Date(
+              parseInt(year.toString()) || new Date().getFullYear(),
+              month ? parseInt(month.toString()) - 1 : 0
+            )
+          )}
+          placeholder={format(new Date(), 'dd', { locale })}
+        />
+      </div>
+      <div>
+        <input
+          type="number"
+          value={year}
+          onChange={handleYearChange}
+          min="1900"
+          max="3000"
+          placeholder={format(new Date(), 'yyyy', { locale })}
+        />
+      </div>
     </div>
   )
 }
 
-export default DateInput
+export { DateInput }

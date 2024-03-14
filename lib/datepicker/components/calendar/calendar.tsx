@@ -1,9 +1,3 @@
-/**
- * Calendar Component
- *
- * Renders the calendar grid, including navigation buttons and day cells.
- * It uses the DatepickerContext for accessing and modifying the current and selected dates.
- */
 import {
   addDays,
   eachDayOfInterval,
@@ -18,13 +12,15 @@ import {
 import React, { useContext, useMemo } from 'react'
 import { DatepickerContext } from '../../provider'
 
-interface CalendarProps {
-  onDateSelect: (date: Date) => void
-}
-
-const Calendar: React.FC<CalendarProps> = React.memo(({ onDateSelect }) => {
-  const { currentDate, setCurrentDate, daysOfWeek, selectedDate, locale } =
-    useContext(DatepickerContext)
+const Calendar: React.FC = React.memo(() => {
+  const {
+    currentDate,
+    setCurrentDate,
+    daysOfWeek,
+    selectedDate,
+    setSelectedDate,
+    locale,
+  } = useContext(DatepickerContext)
 
   const handleMonthChange = (offset: number) => {
     setCurrentDate(
@@ -34,20 +30,25 @@ const Calendar: React.FC<CalendarProps> = React.memo(({ onDateSelect }) => {
 
   const handleTodayClick = () => {
     setCurrentDate(new Date())
+    setSelectedDate(new Date()) // Optionally reset selectedDate to today as well
+  }
+
+  // Enhanced onDateSelect to use context's setSelectedDate
+  const onDateSelect = (date: Date) => {
+    setSelectedDate(date)
   }
 
   const daysToRender = useMemo(() => {
-    const start = startOfWeek(startOfMonth(currentDate))
-    const end = endOfWeek(endOfMonth(currentDate))
-    const days = eachDayOfInterval({ start, end })
+    const start = startOfWeek(startOfMonth(currentDate), { locale })
+    const end = endOfWeek(endOfMonth(currentDate), { locale })
+    let days = eachDayOfInterval({ start, end })
 
     while (days.length < 42) {
-      const nextDay = addDays(days[days.length - 1], 1)
-      days.push(nextDay)
+      days = [...days, addDays(days[days.length - 1], 1)]
     }
 
     return days
-  }, [currentDate])
+  }, [currentDate, locale])
 
   return (
     <>
@@ -60,8 +61,7 @@ const Calendar: React.FC<CalendarProps> = React.memo(({ onDateSelect }) => {
           {'<'}
         </button>
         <div className="current-month" style={{ gridColumn: 'span 5' }}>
-          {format(currentDate, 'MMMM', { locale: locale })}{' '}
-          {format(currentDate, 'yyyy', { locale: locale })}
+          {format(currentDate, 'MMMM yyyy', { locale })}
         </div>
         <button
           type="button"
@@ -70,27 +70,11 @@ const Calendar: React.FC<CalendarProps> = React.memo(({ onDateSelect }) => {
         >
           {'>'}
         </button>
-        {daysOfWeek.map(
-          (
-            day:
-              | string
-              | number
-              | boolean
-              | React.ReactElement<
-                  any,
-                  string | React.JSXElementConstructor<any>
-                >
-              | Iterable<React.ReactNode>
-              | React.ReactPortal
-              | null
-              | undefined,
-            index: React.Key
-          ) => (
-            <div key={index} className="day-of-week">
-              {day}
-            </div>
-          )
-        )}
+        {daysOfWeek.map((day, index) => (
+          <div key={index} className="day-of-week">
+            {day}
+          </div>
+        ))}
         {daysToRender.map((date, index) => {
           const isSelected = selectedDate && isSameDay(selectedDate, date)
           const isCurrentDay = isSameDay(date, new Date())
@@ -105,12 +89,12 @@ const Calendar: React.FC<CalendarProps> = React.memo(({ onDateSelect }) => {
               className={dayClass}
               onClick={() => isCurrentMonth && onDateSelect(date)}
             >
-              {date.getDate()}
+              {format(date, 'd', { locale })}
             </div>
           )
         })}
       </div>
-      <button type="button" className="month-change" onClick={handleTodayClick}>
+      <button type="button" className="today-button" onClick={handleTodayClick}>
         Today
       </button>
     </>

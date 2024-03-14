@@ -10,6 +10,7 @@ import React, {
   createContext,
   useMemo,
   useState,
+  useEffect,
   PropsWithChildren,
 } from 'react'
 
@@ -59,6 +60,14 @@ const DatepickerProvider: React.FC<PropsWithChildren<DatepickerProviderProps>> =
         format(day, 'eeee', { locale })
       )
     }, [locale])
+
+    useEffect(() => {
+      if (selectedDate) {
+        const year = selectedDate.getFullYear()
+        const month = selectedDate.getMonth()
+        setCurrentDate(new Date(year, month))
+      }
+    }, [selectedDate])
 
     const value = {
       currentDate,
