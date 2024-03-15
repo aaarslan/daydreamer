@@ -1,8 +1,19 @@
 import { format, getDaysInMonth } from 'date-fns'
 import React, { useContext, useState } from 'react'
 import { DatepickerContext } from '../../provider'
+import './dateInput.css'
 
-const DateInput: React.FC = () => {
+export interface DateInputProps {
+  placeholder: '/' | '-' | '.' | string
+  maxYear?: number
+  minYear?: number
+}
+
+const DateInput: React.FC<DateInputProps> = ({
+  placeholder = '/',
+  maxYear = 2100,
+  minYear = 1900,
+}: DateInputProps) => {
   const { selectedDate, setSelectedDate, locale } =
     useContext(DatepickerContext)
 
@@ -16,8 +27,8 @@ const DateInput: React.FC = () => {
 
   const updateSelectedDate = (y: number, m: number, d: number) => {
     if (
-      y >= 1900 &&
-      y <= 3000 &&
+      y >= minYear &&
+      y <= maxYear &&
       m >= 1 &&
       m <= 12 &&
       d >= 1 &&
@@ -58,48 +69,63 @@ const DateInput: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <div>
-        <input
-          type="number"
-          value={month}
-          onChange={handleMonthChange}
-          min="1"
-          max="12"
-          placeholder={format(new Date(), 'MM', { locale })}
-        />
-      </div>
-      <div>
-        <input
-          type="number"
-          value={day}
-          onChange={handleDayChange}
-          min="1"
-          max={getDaysInMonth(
-            new Date(
-              parseInt(year.toString()) || new Date().getFullYear(),
-              month ? parseInt(month.toString()) - 1 : 0
-            )
-          )}
-          placeholder={format(new Date(), 'dd', { locale })}
-        />
-      </div>
-      <div>
-        <input
-          type="number"
-          value={year}
-          onChange={handleYearChange}
-          min="1900"
-          max="3000"
-          placeholder={format(new Date(), 'yyyy', { locale })}
-        />
-      </div>
+    <div className="date-input-container">
+      <input
+        className="date-input"
+        type="text"
+        inputMode="numeric"
+        pattern="\d*"
+        value={month}
+        onChange={handleMonthChange}
+        min="1"
+        max="12"
+        placeholder={format(new Date(), 'MM', { locale })}
+      />
+      <span
+        className={
+          month || day || year
+            ? 'date-input-separator'
+            : 'date-input-separator placeholder-color'
+        }
+      >
+        {placeholder}
+      </span>
+      <input
+        className="date-input"
+        type="text"
+        inputMode="numeric"
+        pattern="\d*"
+        value={day}
+        onChange={handleDayChange}
+        min="1"
+        max={getDaysInMonth(
+          new Date(
+            parseInt(year.toString()) || new Date().getFullYear(),
+            month ? parseInt(month.toString()) - 1 : 0
+          )
+        )}
+        placeholder={format(new Date(), 'dd', { locale })}
+      />
+      <span
+        className={
+          month || day || year
+            ? 'date-input-separator'
+            : 'date-input-separator placeholder-color'
+        }
+      >
+        {placeholder}
+      </span>
+      <input
+        className="date-input-year"
+        type="text"
+        inputMode="numeric"
+        pattern="\d*"
+        value={year}
+        onChange={handleYearChange}
+        min={minYear}
+        max={maxYear}
+        placeholder={format(new Date(), 'yyyy', { locale })}
+      />
     </div>
   )
 }
