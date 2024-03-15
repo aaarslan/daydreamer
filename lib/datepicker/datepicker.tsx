@@ -5,16 +5,14 @@ import { useLocale } from './hooks/useLocale'
 import { DatepickerContext } from './provider'
 
 const DatepickerComponent: React.FC = () => {
-  const { open, setOpen } = useContext(DatepickerContext)
+  const { open } = useContext(DatepickerContext)
 
   useLocale()
 
   return (
     <>
       <DateInput />
-      <button type="button" onClick={() => setOpen(!open)}>
-        Open
-      </button>
+
       {open && <Calendar />}
     </>
   )
