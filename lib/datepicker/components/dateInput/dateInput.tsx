@@ -3,7 +3,6 @@ import { format, getDaysInMonth } from 'date-fns'
 import React, { useContext, useState } from 'react'
 import { DatepickerContext } from '../../provider'
 import { CalendarIcon } from './calendarIcon'
-import './dateInput.css'
 
 export interface DateInputProps {
   placeholder?: '/' | '-' | '.' | string
@@ -183,7 +182,7 @@ const DateInput: React.FC<DateInputProps> = ({
         className="date-input-button"
         onClick={() => setOpen(!open)}
       >
-        <CalendarIcon />
+        <CalendarIcon height={14} width={14} />
       </button>
     </div>
   )

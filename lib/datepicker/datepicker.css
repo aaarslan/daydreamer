@@ -1,92 +1,123 @@
+:root {
+  --date-input-bg-color: white;
+  --date-input-border-radius: 5px;
+  --date-input-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --date-input-focus-border-color: #007bff;
+  --date-input-focus-box-shadow: 0 0 0 2px rgba(0, 123, 255, .25);
+  --placeholder-color: #aaa;
+  --calendar-bg-color: #eff1f5;
+  --calendar-border-radius: 8px;
+  --button-cursor: pointer;
+  --day-bg-color: #ccd0da;
+  --day-hover-bg-color: #9ca0b0;
+  --selected-day-bg-color: #40a02b;
+  --today-bg-color: #04a5e5;
+  --weekend-day-color: #fe640b;
+  --font-color-default: #4c4f69;
+}
+
+.date-input-container,
+.date-input,
+.date-input-year,
+.date-input-button {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  box-sizing: border-box;
+  line-height: 1;
+  list-style: none;
+}
+
+
+.date-input-container {
+  background-color: var(--date-input-bg-color);
+  padding: 5px;
+  border-radius: var(--date-input-border-radius);
+  box-shadow: var(--date-input-box-shadow);
+}
+
+
+.date-input,
+.date-input-year,
+.date-input-button {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  width: auto;
+  min-width: 30px;
+  max-width: 40px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.date-input:focus,
+.date-input-year:focus {
+  outline: none;
+  border-color: var(--date-input-focus-border-color);
+  box-shadow: var(--date-input-focus-box-shadow);
+}
+
+.date-input-separator,
+.placeholder-color {
+  font-size: 1em;
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+.placeholder-color,
+.date-input::placeholder,
+.date-input-year::placeholder {
+  color: var(--placeholder-color);
+}
+
+.date-input-button {
+  cursor: var(--button-cursor);
+}
+
+
+.datepicker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  background-color: var(--calendar-bg-color);
+  border-radius: var(--calendar-border-radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease;
+}
+
 .datepicker-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 10px;
-  padding: 20px;
-  background-color: #eff1f5;
-  border-radius: 8px;
-}
-
-@media (max-width: 600px) {
-  .datepicker-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    padding: 10px;
-
-  }
-
-  .day,
-  .month-change,
-  .current-month {
-    font-size: 14px;
-  }
-}
-
-.month-change {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  color: #4c4f69;
+  padding: 10px;
+  background-color: var(--calendar-bg-color);
+  border-radius: var(--calendar-border-radius);
+  transition: opacity 0.3s ease;
 }
 
 .current-month {
-  text-align: center;
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
   font-weight: bold;
-  color: #4c4f69;
-}
-
-.day-of-week {
-  text-align: center;
-  font-weight: bold;
-  color: #4c4f69;
-}
-
-.day {
-  text-align: center;
-  padding: 10px;
-  background-color: #ccd0da;
-  color: #4c4f69;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.day:hover {
-  background-color: #9ca0b0;
-}
-
-.selected {
-  background-color: #40a02b;
-  color: #eff1f5;
-}
-
-.today {
-  background-color: #04a5e5;
-  color: #eff1f5;
-}
-
-.weekend {
-  color: #fe640b;
-}
-
-.empty-day {
-  background-color: transparent;
-}
-
-.overflow {
-  opacity: 0.5;
-}
-
-.day,
-.month-change {
-  min-width: 44px;
+  color: var(--font-color-default);
+  cursor: var(--button-cursor);
+  border-radius: 5px;
   min-height: 44px;
-  padding: 10px;
-}
-
-.datepicker-grid {
-  transition: opacity 0.3s ease;
+  min-width: 44px;
+  border: none;
 }
 
 .calendar-hidden {
@@ -97,4 +128,117 @@
 .calendar-visible {
   opacity: 1;
   visibility: visible;
+}
+
+
+@media (max-width: 600px) {
+  .datepicker-grid {
+    padding: 10px;
+  }
+
+  .day,
+  .month-change,
+  .current-month {
+    font-size: 14px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px;
+    text-align: center;
+    justify-content: end;
+    cursor: var(--button-cursor);
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+}
+
+.month-change,
+.current-month,
+.day-of-week,
+.day {
+  color: var(--font-color-default);
+}
+
+.month-change {
+  cursor: var(--button-cursor);
+  border-radius: 5px;
+  min-height: 44px;
+  min-width: 44px;
+  border: none;
+}
+
+.month-change:hover {
+  background-color: var(--day-hover-bg-color);
+}
+
+.month-change:active {
+  background-color: var(--selected-day-bg-color);
+  color: white;
+  border: none;
+  box-shadow: none;
+  transform: scale(0.95);
+}
+
+.day,
+.month-change .current-month {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px;
+  text-align: center;
+  justify-content: end;
+  cursor: var(--button-cursor);
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+
+.day:hover {
+  background-color: var(--day-hover-bg-color);
+}
+
+.selected {
+  background-color: var(--selected-day-bg-color);
+  color: white;
+}
+
+.today {
+  background-color: var(--today-bg-color);
+  color: white;
+}
+
+.weekend {
+  color: var(--weekend-day-color);
+}
+
+.overflow {
+  opacity: 0.5;
+}
+
+.empty-day {
+  background-color: transparent;
+}
+
+.today-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  font-weight: bold;
+  color: var(--font-color-default);
+  cursor: var(--button-cursor);
+  border-radius: 5px;
+  min-height: 44px;
+  min-width: 44px;
+  border: none;
+}
+
+.today-button:hover {
+  background-color: var(--day-hover-bg-color);
+}
+
+.today-button:active {
+  background-color: var(--selected-day-bg-color);
+  color: white;
+  border: none;
+  box-shadow: none;
+  transform: scale(0.95);
 }

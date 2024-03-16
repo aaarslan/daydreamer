@@ -30,10 +30,9 @@ const Calendar: React.FC = React.memo(() => {
 
   const handleTodayClick = () => {
     setCurrentDate(new Date())
-    setSelectedDate(new Date()) // Optionally reset selectedDate to today as well
+    setSelectedDate(new Date())
   }
 
-  // Enhanced onDateSelect to use context's setSelectedDate
   const onDateSelect = (date: Date) => {
     setSelectedDate(date)
   }
@@ -51,7 +50,7 @@ const Calendar: React.FC = React.memo(() => {
   }, [currentDate, locale])
 
   return (
-    <>
+    <div className="datepicker-container">
       <div className="datepicker-grid">
         <button
           type="button"
@@ -97,7 +96,7 @@ const Calendar: React.FC = React.memo(() => {
       <button type="button" className="today-button" onClick={handleTodayClick}>
         Today
       </button>
-    </>
+    </div>
   )
 })
 

@@ -57,7 +57,7 @@ const DatepickerProvider: React.FC<PropsWithChildren<DatepickerProviderProps>> =
       const start = startOfWeek(new Date(), { locale })
       const end = endOfWeek(new Date(), { locale })
       return eachDayOfInterval({ start, end }).map((day) =>
-        format(day, 'eeee', { locale })
+        format(day, 'eee', { locale })
       )
     }, [locale])
 
