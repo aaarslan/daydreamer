@@ -4,6 +4,12 @@ import type React from "react";
 import { useContext, useEffect, useState } from "react";
 import { DatepickerContext } from "../../provider";
 import { CalendarIcon } from "./calendarIcon";
+import {
+  DateInputButton,
+  DateInputContainer,
+  DateInputElement,
+  DateInputSeparator,
+} from "./dateInput.styled";
 
 export interface DateInputProps {
   placeholder?: "/" | "-" | "." | string;
@@ -133,10 +139,9 @@ const DateInput: React.FC<DateInputProps> = ({
   };
 
   return (
-    <div className="date-input-container">
-      <input
+    <DateInputContainer>
+      <DateInputElement
         ref={monthRef}
-        className="date-input"
         type="text"
         inputMode="numeric"
         pattern="\d*"
@@ -146,7 +151,7 @@ const DateInput: React.FC<DateInputProps> = ({
         max="12"
         placeholder={format(new Date(), "MM", { locale })}
       />
-      <span
+      <DateInputSeparator
         className={
           month || day || year
             ? "date-input-separator"
@@ -154,10 +159,9 @@ const DateInput: React.FC<DateInputProps> = ({
         }
       >
         {placeholder}
-      </span>
-      <input
+      </DateInputSeparator>
+      <DateInputElement
         ref={dayRef}
-        className="date-input"
         type="text"
         inputMode="numeric"
         pattern="\d*"
@@ -167,7 +171,7 @@ const DateInput: React.FC<DateInputProps> = ({
         max="31"
         placeholder={format(new Date(), "dd", { locale })}
       />
-      <span
+      <DateInputSeparator
         className={
           month || day || year
             ? "date-input-separator"
@@ -175,10 +179,9 @@ const DateInput: React.FC<DateInputProps> = ({
         }
       >
         {placeholder}
-      </span>
-      <input
+      </DateInputSeparator>
+      <DateInputElement
         ref={yearRef}
-        className="date-input-year"
         type="text"
         inputMode="numeric"
         pattern="\d*"
@@ -189,14 +192,10 @@ const DateInput: React.FC<DateInputProps> = ({
         max={maxYear}
         placeholder={format(new Date(), "yyyy", { locale })}
       />
-      <button
-        type="button"
-        className="date-input-button"
-        onClick={() => setOpen(!open)}
-      >
+      <DateInputButton type="button" onClick={() => setOpen(!open)}>
         <CalendarIcon height={14} width={14} />
-      </button>
-    </div>
+      </DateInputButton>
+    </DateInputContainer>
   );
 };
 

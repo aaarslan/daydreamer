@@ -1,6 +1,7 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
+import linaria from "@wyw-in-js/vite";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import { libInjectCss } from "vite-plugin-lib-inject-css";
@@ -12,6 +13,7 @@ export default defineConfig({
   plugins: [
     react(),
     libInjectCss(),
+    linaria(),
     dts({ include: ["lib/"], rollupTypes: true }),
   ],
   build: {
