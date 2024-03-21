@@ -1,55 +1,40 @@
 {
-  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "formatter": {
-    "enabled": true,
-    "formatWithErrors": false,
-    "indentWidth": 2,
-    "indentStyle": "space",
-    "lineWidth": 80,
-    "ignore": [
-      "docs",
-      "dist",
-      "public",
-      "**/node_modules/**"
-    ]
-  },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "single",
-      "quoteProperties": "asNeeded",
-      "semicolons": "asNeeded",
-      "trailingComma": "es5"
-    }
+  "$schema": "https://biomejs.dev/schemas/1.6.1/schema.json",
+  "organizeImports": {
+    "enabled": true
   },
   "linter": {
     "enabled": true,
     "ignore": [
+      "node_modules",
       "docs",
       "dist",
       "public",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "bin"
     ],
     "rules": {
-      "recommended": true,
-      "a11y": {
-        "useKeyWithClickEvents": "off"
-      },
-      "correctness": {
-        "noVoidTypeReturn": "off"
-      },
-      "nursery": {
-        "useGroupedTypeImport": "error"
-      },
-      "suspicious": {
-        "noExplicitAny": "off",
-        "noArrayIndexKey": "off"
-      },
-      "style": {
-        "all": false
-      }
+      "recommended": true
     }
   },
-  "organizeImports": {
-    "enabled": true
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80,
+    "lineEnding": "lf",
+    "ignore": [
+      "node_modules",
+      "docs",
+      "dist",
+      "public",
+      "**/node_modules/**",
+      "bin"
+    ]
+  },
+  "files": {
+    "ignore": ["node_modules", "**/node_modules/**", "dist", "bin"],
+    "ignoreUnknown": true
   }
 }

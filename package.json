@@ -1,26 +1,48 @@
 {
   "name": "daydreamer",
-  "private": true,
+  "description": "Daydreamer is a reusable datepicker component for React.",
+  "main": "dist/daydreamer.js",
+  "module": "dist/daydreamer.js",
+  "types": "dist/daydreamer.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/daydreamer.js",
+      "require": "./dist/daydreamer.cjs"
+    },
+    "./dist/index.css": "./dist/index.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaarslan/daydreamer.git"
+  },
+  "keywords": ["datepicker", "react", "daydreamer"],
+  "author": "A. Arslan",
+  "license": "MIT",
+  "private": false,
   "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "tsc --p ./tsconfig-build.json && vite build",
+    "format": "biome format --changed --write"
   },
-  "dependencies": {
+  "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.5.3",
+    "@biomejs/biome": "^1.6.1",
     "@react-input/number-format": "^1.0.22",
+    "@types/node": "^20.11.30",
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",
-    "date-fns": "^3.3.1",
+    "date-fns": "^3.6.0",
     "lefthook": "^1.6.4",
+    "terser": "^5.29.2",
     "typescript": "^5.2.2",
-    "vite": "^5.1.4"
+    "vite": "^5.1.4",
+    "vite-plugin-dts": "^3.7.3",
+    "vite-plugin-lib-inject-css": "^2.0.0"
   }
 }

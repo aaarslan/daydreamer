@@ -8,9 +8,9 @@ import {
   isSameMonth,
   startOfMonth,
   startOfWeek,
-} from 'date-fns'
-import React, { useContext, useMemo } from 'react'
-import { DatepickerContext } from '../../provider'
+} from "date-fns";
+import React, { useContext, useMemo, useId } from "react";
+import { DatepickerContext } from "../../provider";
 
 const Calendar: React.FC = React.memo(() => {
   const {
@@ -20,34 +20,34 @@ const Calendar: React.FC = React.memo(() => {
     selectedDate,
     setSelectedDate,
     locale,
-  } = useContext(DatepickerContext)
+  } = useContext(DatepickerContext);
 
   const handleMonthChange = (offset: number) => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + offset, 1)
-    )
-  }
-
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + offset, 1),
+    );
+  };
+  const uniqueKey = useId();
   const handleTodayClick = () => {
-    setCurrentDate(new Date())
-    setSelectedDate(new Date())
-  }
+    setCurrentDate(new Date());
+    setSelectedDate(new Date());
+  };
 
   const onDateSelect = (date: Date) => {
-    setSelectedDate(date)
-  }
+    setSelectedDate(date);
+  };
 
   const daysToRender = useMemo(() => {
-    const start = startOfWeek(startOfMonth(currentDate), { locale })
-    const end = endOfWeek(endOfMonth(currentDate), { locale })
-    let days = eachDayOfInterval({ start, end })
+    const start = startOfWeek(startOfMonth(currentDate), { locale });
+    const end = endOfWeek(endOfMonth(currentDate), { locale });
+    let days = eachDayOfInterval({ start, end });
 
     while (days.length < 42) {
-      days = [...days, addDays(days[days.length - 1], 1)]
+      days = [...days, addDays(days[days.length - 1], 1)];
     }
 
-    return days
-  }, [currentDate, locale])
+    return days;
+  }, [currentDate, locale]);
 
   return (
     <div className="datepicker-container">
@@ -57,47 +57,49 @@ const Calendar: React.FC = React.memo(() => {
           className="month-change"
           onClick={() => handleMonthChange(-1)}
         >
-          {'<'}
+          {"<"}
         </button>
-        <div className="current-month" style={{ gridColumn: 'span 5' }}>
-          {format(currentDate, 'MMMM yyyy', { locale })}
+        <div className="current-month" style={{ gridColumn: "span 5" }}>
+          {format(currentDate, "MMMM yyyy", { locale })}
         </div>
         <button
           type="button"
           className="month-change"
           onClick={() => handleMonthChange(1)}
         >
-          {'>'}
+          {">"}
         </button>
         {daysOfWeek.map((day, index) => (
-          <div key={index} className="day-of-week">
+          <div key={`${uniqueKey + index}`} className="day-of-week">
             {day}
           </div>
         ))}
         {daysToRender.map((date, index) => {
-          const isSelected = selectedDate && isSameDay(selectedDate, date)
-          const isCurrentDay = isSameDay(date, new Date())
-          const isCurrentMonth = isSameMonth(date, currentDate)
-          const dayClass = `day ${isSelected ? 'selected' : ''} ${
-            isCurrentDay ? 'today' : ''
-          } ${isCurrentMonth ? '' : 'overflow'}`
+          const isSelected = selectedDate && isSameDay(selectedDate, date);
+          const isCurrentDay = isSameDay(date, new Date());
+          const isCurrentMonth = isSameMonth(date, currentDate);
+          const dayClass = `day ${isSelected ? "selected" : ""} ${
+            isCurrentDay ? "today" : ""
+          } ${isCurrentMonth ? "" : "overflow"}`;
 
           return (
             <div
-              key={index}
+              key={`${uniqueKey + index}`}
               className={dayClass}
               onClick={() => isCurrentMonth && onDateSelect(date)}
+              onKeyUp={() => {}}
+              onKeyDown={() => {}}
             >
-              {format(date, 'd', { locale })}
+              {format(date, "d", { locale })}
             </div>
-          )
+          );
         })}
       </div>
       <button type="button" className="today-button" onClick={handleTodayClick}>
         Today
       </button>
     </div>
-  )
-})
+  );
+});
 
-export { Calendar }
+export { Calendar };

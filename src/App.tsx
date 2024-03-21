@@ -1,10 +1,10 @@
-import { Datepicker } from '../lib/datepicker'
+import { Datepicker } from "../lib";
 function App() {
   return (
     <>
       <Datepicker />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

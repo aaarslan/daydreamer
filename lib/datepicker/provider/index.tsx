@@ -1,35 +1,37 @@
 import {
-  Locale,
+  type Locale,
   eachDayOfInterval,
   endOfWeek,
   format,
   startOfWeek,
-} from 'date-fns'
+} from "date-fns";
 
-import React, {
+import type React from "react";
+import {
+  type PropsWithChildren,
   createContext,
+  useEffect,
   useMemo,
   useState,
-  useEffect,
-  PropsWithChildren,
-} from 'react'
+} from "react";
 
 export interface DatepickerContextProps {
-  daysOfWeek: string[]
-  currentDate: Date
-  setCurrentDate: (date: Date) => void
-  selectedDate: Date | null
-  setSelectedDate: (date: Date | null) => void
-  open: boolean
-  setOpen: (open: boolean) => void
-  inputValue: string
-  setInputValue: (value: string) => void
-  locale?: Locale
-  setLocale?: (locale: Locale) => void
+  daysOfWeek: string[];
+  currentDate: Date;
+  setCurrentDate: (date: Date) => void;
+  selectedDate: Date | null;
+  setSelectedDate: (date: Date | null) => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  inputValue: string;
+  setInputValue: (value: string) => void;
+  locale?: Locale;
+  setLocale?: (locale: Locale) => void;
 }
 
 export interface DatepickerProviderProps {
-  initialLocale?: Locale
+  initialLocale?: Locale;
+  onDateChange?: (date: Date | null) => void;
 }
 
 const DatepickerContext = createContext<DatepickerContextProps>({
@@ -40,40 +42,46 @@ const DatepickerContext = createContext<DatepickerContextProps>({
   setSelectedDate: () => {},
   open: false,
   setOpen: () => {},
-  inputValue: '',
+  inputValue: "",
   setInputValue: () => {},
   locale: undefined,
   setLocale: () => {},
-})
+});
 
 const DatepickerProvider: React.FC<PropsWithChildren<DatepickerProviderProps>> =
-  ({ children, initialLocale }) => {
-    const [currentDate, setCurrentDate] = useState(new Date())
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-    const [open, setOpen] = useState<boolean>(false)
-    const [inputValue, setInputValue] = useState('')
-    const [locale, setLocale] = useState<Locale | undefined>(initialLocale)
+  ({ children, initialLocale, onDateChange }) => {
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [open, setOpen] = useState<boolean>(false);
+    const [inputValue, setInputValue] = useState("");
+    const [locale, setLocale] = useState<Locale | undefined>(initialLocale);
+    const originalSetSelectedDate = setSelectedDate;
+    const setSelectedDateWrapper = (date: Date | null) => {
+      originalSetSelectedDate(date);
+      if (onDateChange) {
+        onDateChange(date);
+      }
+    };
     const daysOfWeek = useMemo(() => {
-      const start = startOfWeek(new Date(), { locale })
-      const end = endOfWeek(new Date(), { locale })
+      const start = startOfWeek(new Date(), { locale });
+      const end = endOfWeek(new Date(), { locale });
       return eachDayOfInterval({ start, end }).map((day) =>
-        format(day, 'eee', { locale })
-      )
-    }, [locale])
+        format(day, "eee", { locale }),
+      );
+    }, [locale]);
 
     useEffect(() => {
       if (selectedDate) {
-        const year = selectedDate.getFullYear()
-        const month = selectedDate.getMonth()
-        setCurrentDate(new Date(year, month))
+        const year = selectedDate.getFullYear();
+        const month = selectedDate.getMonth();
+        setCurrentDate(new Date(year, month));
       }
-    }, [selectedDate])
+    }, [selectedDate]);
 
     const value = {
       currentDate,
       setCurrentDate,
       selectedDate,
-      setSelectedDate,
       open,
       setOpen,
       inputValue,
@@ -81,13 +89,14 @@ const DatepickerProvider: React.FC<PropsWithChildren<DatepickerProviderProps>> =
       locale,
       setLocale,
       daysOfWeek,
-    }
+      setSelectedDate: setSelectedDateWrapper,
+    };
 
     return (
       <DatepickerContext.Provider value={value}>
         {children}
       </DatepickerContext.Provider>
-    )
-  }
+    );
+  };
 
-export { DatepickerContext, DatepickerProvider }
+export { DatepickerContext, DatepickerProvider };
