@@ -19,18 +19,20 @@
   "author": "A. Arslan",
   "license": "MIT",
   "private": false,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc --p ./tsconfig-build.json && vite build",
     "format": "biome format --changed --write"
   },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+  "dependencies": {
     "date-fns": "^3.6.0",
     "@react-input/number-format": "^1.0.22"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.1",
