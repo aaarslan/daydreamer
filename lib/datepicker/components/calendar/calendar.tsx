@@ -11,6 +11,18 @@ import {
 } from "date-fns";
 import React, { useContext, useMemo, useId } from "react";
 import { DatepickerContext } from "../../provider";
+import {
+  CalendarActions,
+  CalendarContainer,
+  CalendarGrid,
+  ClearButton,
+  CurrentMonth,
+  Day,
+  DayOfWeek,
+  MonthChangeButton,
+  TodayButton,
+  YearChangeButton,
+} from "./calendar.styled";
 
 const Calendar: React.FC = React.memo(() => {
   const {
@@ -50,40 +62,39 @@ const Calendar: React.FC = React.memo(() => {
   }, [currentDate, locale]);
 
   return (
-    <div className="datepicker-container">
-      <div className="datepicker-grid">
-        <button
-          type="button"
-          className="month-change"
-          onClick={() => handleMonthChange(-1)}
-        >
+    <CalendarContainer>
+      <CalendarGrid>
+        <YearChangeButton type="button" onClick={() => handleMonthChange(-12)}>
+          {"<<"}
+        </YearChangeButton>
+        <MonthChangeButton type="button" onClick={() => handleMonthChange(-1)}>
           {"<"}
-        </button>
-        <div className="current-month" style={{ gridColumn: "span 5" }}>
+        </MonthChangeButton>
+        <CurrentMonth>
           {format(currentDate, "MMMM yyyy", { locale })}
-        </div>
-        <button
-          type="button"
-          className="month-change"
-          onClick={() => handleMonthChange(1)}
-        >
+        </CurrentMonth>
+        <MonthChangeButton type="button" onClick={() => handleMonthChange(1)}>
           {">"}
-        </button>
+        </MonthChangeButton>
+        <YearChangeButton type="button" onClick={() => handleMonthChange(12)}>
+          {">>"}
+        </YearChangeButton>
         {daysOfWeek.map((day, index) => (
-          <div key={`${uniqueKey + index}`} className="day-of-week">
-            {day}
-          </div>
+          <DayOfWeek key={`${uniqueKey + index}`}>{day}</DayOfWeek>
         ))}
         {daysToRender.map((date, index) => {
           const isSelected = selectedDate && isSameDay(selectedDate, date);
           const isCurrentDay = isSameDay(date, new Date());
           const isCurrentMonth = isSameMonth(date, currentDate);
-          const dayClass = `day ${isSelected ? "selected" : ""} ${
-            isCurrentDay ? "today" : ""
-          } ${isCurrentMonth ? "" : "overflow"}`;
+          let dayClass = `day ${isSelected ? "selected" : ""}  ${
+            isCurrentMonth ? "" : "overflow"
+          }`;
+          if (!selectedDate && isCurrentDay) {
+            dayClass += " today";
+          }
 
           return (
-            <div
+            <Day
               key={`${uniqueKey + index}`}
               className={dayClass}
               onClick={() => isCurrentMonth && onDateSelect(date)}
@@ -91,14 +102,23 @@ const Calendar: React.FC = React.memo(() => {
               onKeyDown={() => {}}
             >
               {format(date, "d", { locale })}
-            </div>
+            </Day>
           );
         })}
-      </div>
-      <button type="button" className="today-button" onClick={handleTodayClick}>
-        Today
-      </button>
-    </div>
+      </CalendarGrid>
+      <CalendarActions>
+        <TodayButton type="button" onClick={handleTodayClick}>
+          Today
+        </TodayButton>
+        <ClearButton
+          type="button"
+          onClick={() => setSelectedDate(null)}
+          disabled={!selectedDate}
+        >
+          Clear
+        </ClearButton>
+      </CalendarActions>
+    </CalendarContainer>
   );
 });
 

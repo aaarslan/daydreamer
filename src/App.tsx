@@ -1,9 +1,9 @@
 import { Datepicker } from "../lib";
 function App() {
   return (
-    <>
-      <Datepicker />
-    </>
+    <div style={{ width: "300px" }}>
+      <Datepicker onDateChange={(e) => console.log(e)} />
+    </div>
   );
 }
 
