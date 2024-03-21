@@ -19,7 +19,7 @@
   "author": "A. Arslan",
   "license": "MIT",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -28,16 +28,16 @@
   },
   "peerDependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "date-fns": "^3.6.0",
+    "@react-input/number-format": "^1.0.22"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.1",
-    "@react-input/number-format": "^1.0.22",
     "@types/node": "^20.11.30",
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",
-    "date-fns": "^3.6.0",
     "lefthook": "^1.6.4",
     "terser": "^5.29.2",
     "typescript": "^5.2.2",
