@@ -14,14 +14,7 @@ export default defineConfig({
     react(),
     libInjectCss(),
     linaria(),
-    dts({
-      include: ["lib/**/*"],
-      outDir: "dist/types",
-      tsconfigPath: "./tsconfig-build.json",
-      rollupTypes: true,
-      staticImport: true,
-      insertTypesEntry: true,
-    }),
+    dts({ include: ["lib/"], rollupTypes: true }),
   ],
   build: {
     copyPublicDir: false,
@@ -43,34 +36,16 @@ export default defineConfig({
         ...Object.keys(devDependencies),
         ...Object.keys(peerDependencies),
       ],
-      output: [
-        {
-          format: "es",
-          dir: "dist/esm",
-          entryFileNames: "[name].mjs",
-          chunkFileNames: "[name]-[hash].mjs",
-          globals: {
-            react: "React",
-            "react/jsx-runtime": "jsxRuntime",
-            "react-dom": "ReactDOM",
-            "date-fns": "dateFns",
-            "@react-input/number-format": "numberFormat",
-          },
+      output: {
+        globals: {
+          react: "React",
+          "react/jsx-runtime": "jsxRuntime",
+          "react-dom": "ReactDOM",
+          "date-fns": "dateFns",
+          "@react-input/number-format": "numberFormat",
         },
-        {
-          format: "cjs",
-          dir: "dist/cjs",
-          entryFileNames: "[name].cjs",
-          chunkFileNames: "[name]-[hash].cjs",
-          globals: {
-            react: "React",
-            "react/jsx-runtime": "jsxRuntime",
-            "react-dom": "ReactDOM",
-            "date-fns": "dateFns",
-            "@react-input/number-format": "numberFormat",
-          },
-        },
-      ],
+      },
+      input: "lib/index.tsx",
     },
   },
 });
