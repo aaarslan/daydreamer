@@ -47,4 +47,5 @@ function Datepicker({ locale, onDateChange }: DatepickerProps) {
     </DatepickerProvider>
   );
 }
+export type { DatepickerProps };
 export { Datepicker };
