@@ -19,11 +19,11 @@
   "author": "A. Arslan",
   "license": "MIT",
   "private": false,
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --p ./tsconfig-build.json && vite build",
+    "build": "vite build",
     "format": "biome format --changed --write"
   },
   "dependencies": {

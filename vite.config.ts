@@ -14,7 +14,14 @@ export default defineConfig({
     react(),
     libInjectCss(),
     linaria(),
-    dts({ include: ["lib/"], rollupTypes: true }),
+    dts({
+      include: ["lib/**/*"],
+      outDir: "dist/types",
+      tsconfigPath: "./tsconfig-build.json",
+      rollupTypes: true,
+      staticImport: true,
+      insertTypesEntry: true,
+    }),
   ],
   build: {
     copyPublicDir: false,
@@ -64,7 +71,6 @@ export default defineConfig({
           },
         },
       ],
-      input: "lib/index.tsx",
     },
   },
 });
