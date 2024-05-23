@@ -1,0 +1,18 @@
+.day {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: .5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.selectedDay {
+  background-color: #f0f0f0;
+}
+
+.disabledDay {
+  cursor: not-allowed;
+}

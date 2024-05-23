@@ -20,7 +20,7 @@
     /* Type Generation */
     "baseUrl": ".",
     "paths": {
-      "dlx-btn": ["node_modules/dlx-btn"]
+      "daydreamer": ["node_modules/daydreamer"]
     }
   },
   "include": ["src", "lib"],

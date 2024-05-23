@@ -1,7 +1,6 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
-import linaria from "@wyw-in-js/vite";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import { libInjectCss } from "vite-plugin-lib-inject-css";
@@ -13,7 +12,6 @@ export default defineConfig({
   plugins: [
     react(),
     libInjectCss(),
-    linaria(),
     dts({ include: ["lib/"], rollupTypes: true }),
   ],
   build: {
@@ -31,10 +29,6 @@ export default defineConfig({
         "react/jsx-runtime",
         "react",
         "react-dom",
-        "date-fns",
-        "@react-input/number-format",
-        "@linaria/react",
-        "@linaria/core",
         ...Object.keys(devDependencies),
         ...Object.keys(peerDependencies),
       ],
@@ -43,10 +37,6 @@ export default defineConfig({
           react: "React",
           "react/jsx-runtime": "jsxRuntime",
           "react-dom": "ReactDOM",
-          "date-fns": "dateFns",
-          "@react-input/number-format": "numberFormat",
-          "@linaria/react": "linariaReact",
-          "@linaria/core": "linariaCore",
         },
       },
       input: "lib/index.tsx",
