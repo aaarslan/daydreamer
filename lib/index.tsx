@@ -1,4 +1,3 @@
-import { Datepicker } from "./datepicker";
+import { Text } from "./components";
 
-export { Datepicker } from "./datepicker";
-export default Datepicker;
+export { Text };

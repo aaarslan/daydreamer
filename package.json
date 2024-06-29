@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/aaarslan/daydreamer.git"
   },
-  "keywords": ["datepicker", "react", "daydreamer"],
+  "keywords": ["datepicker", "calendar", "react", "daydreamer"],
   "author": "A. Arslan",
   "license": "MIT",
   "private": false,
@@ -24,24 +24,22 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --p ./tsconfig-build.json && vite build",
-    "lint": "biome check --apply lib/*"
+    "lint": "biome check --write lib/*"
   },
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.7.3",
-    "@evilmartians/lefthook": "^1.6.12",
-    "@types/node": "^20.12.12",
-    "@types/react": "^18.3.2",
+    "@biomejs/biome": "^1.8.3",
+    "@evilmartians/lefthook": "^1.6.18",
+    "@types/node": "^20.14.9",
+    "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.0",
-    "@wyw-in-js/babel-preset": "^0.5.3",
-    "@wyw-in-js/vite": "^0.5.3",
-    "terser": "^5.31.0",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.11",
+    "@vitejs/plugin-react": "^4.3.1",
+    "terser": "^5.31.1",
+    "typescript": "^5.5.2",
+    "vite": "^5.3.2",
     "vite-plugin-dts": "^3.9.1",
     "vite-plugin-lib-inject-css": "^2.1.1"
   },
