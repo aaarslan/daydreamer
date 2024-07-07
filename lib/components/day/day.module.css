@@ -1,0 +1,74 @@
+.day {
+  display: flex;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  color: var(--primary-color, #1e1e1e);
+  background-color: var(--background-color, #ffffff);
+  font-weight: bold;
+  position: relative;
+  border-radius: 0;
+}
+
+.day:hover:not(.disabled):not(.overflow) {
+  background-color: var(--hover-color, #d2e0fd);
+}
+
+.selected {
+  background-color: var(--selected-color, #1e66f5);
+  color: var(--selected-text-color, #ffffff);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.inRange {
+  background-color: var(--range-color, #d2e0fd);
+}
+
+.rangeStart {
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+
+.rangeEnd {
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.rangeStart.rangeEnd {
+  border-radius: 50%;
+}
+
+.firstDayOfMonth.inRange:not(.rangeStart) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.lastDayOfMonth.inRange:not(.rangeEnd) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.rangeStart::before,
+.rangeEnd::before {
+  content: none;
+}
+
+.today {
+  color: var(--selected-color, #1e66f5);
+}
+
+.disabled {
+  color: var(--disabled-color, #666666);
+  cursor: not-allowed;
+  font-weight: lighter;
+}
+
+.overflow {
+  color: var(--overflow-color, #cccccc);
+  cursor: not-allowed;
+  font-weight: lighter;
+}

@@ -1,5 +1,5 @@
 // import { Datepicker } from "../lib";
-import { Text } from "../lib";
+import { Datepicker } from "../lib";
 function App() {
   // const theme = {
   //   day: "#000000",
@@ -18,7 +18,7 @@ function App() {
   return (
     <div style={{ width: "200px", fontSize: "16px" }}>
       {/* <Datepicker theme={theme} /> */}
-      <Text variant="h1Heavy">Hello</Text>
+      <Datepicker onChange={() => {}} selectionMode="range" />
     </div>
   );
 }

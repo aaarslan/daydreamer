@@ -1,3 +1,3 @@
-import { Text } from "./components";
+import { Datepicker } from "./components";
 
-export { Text };
+export { Datepicker };

@@ -15,6 +15,9 @@
       "bin"
     ],
     "rules": {
+      "suspicious": {
+        "noArrayIndexKey": "off"
+      },
       "recommended": true
     }
   },

@@ -1,3 +1,3 @@
-import { Text } from "./text";
+import { Datepicker } from "./datepicker";
 
-export { Text };
+export { Datepicker };
