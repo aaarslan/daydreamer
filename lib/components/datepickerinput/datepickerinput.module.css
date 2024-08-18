@@ -1,0 +1,43 @@
+.container {
+  position: relative;
+  display: inline-block;
+}
+
+.inputWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.input {
+  padding: 0.5rem;
+  padding-right: 2rem;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.clearButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+.calendarContainer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  margin-top: 0.5rem;
+  background-color: var(--background-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

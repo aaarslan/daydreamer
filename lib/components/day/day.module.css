@@ -1,0 +1,68 @@
+.day {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: transparent;
+  color: var(--primary-color);
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.day:hover:not(.disabled):not(.overflow) {
+  background-color: var(--hover-color);
+}
+
+.selected {
+  background-color: var(--selected-color);
+  color: var(--selected-text-color);
+}
+
+.inRange {
+  background-color: var(--hover-color);
+}
+
+.rangeStart,
+.rangeEnd {
+  background-color: var(--selected-color);
+  color: var(--selected-text-color);
+}
+
+.today:not(.selected) {
+  border: 2px solid var(--selected-color);
+}
+
+.disabled,
+.overflow {
+  color: var(--disabled-color);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.overflow {
+  opacity: 0.5;
+}
+
+.firstDayOfMonth {
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+
+.lastDayOfMonth {
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.firstDayOfMonth.inRange:not(.rangeStart) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.lastDayOfMonth.inRange:not(.rangeEnd) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}

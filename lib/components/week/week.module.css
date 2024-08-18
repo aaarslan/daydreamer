@@ -1,0 +1,17 @@
+.weekdayHeader {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background-color: var(--background-color);
+  color: var(--primary-color);
+}
+
+.weekday {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}

@@ -1,0 +1,30 @@
+.datepicker {
+  --primary-color: #1e1e1e;
+  --background-color: #ffffff;
+  --selected-color: #1e66f5;
+  --selected-text-color: #ffffff;
+  --hover-color: #d2e0fd;
+  --disabled-color: #cccccc;
+  --overflow-color: #999999;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  width: fit-content;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  background-color: var(--background-color);
+}
+
+.month {
+  display: flex;
+  flex-direction: column;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  padding: 0.5rem;
+}

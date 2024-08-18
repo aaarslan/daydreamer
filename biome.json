@@ -1,19 +1,16 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.6.1/schema.json",
-  "organizeImports": {
-    "enabled": true
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "files": {
+    "ignore": ["node_modules", "dist", "bin"],
+    "ignoreUnknown": true
   },
   "linter": {
     "enabled": true,
-    "ignore": [
-      "node_modules",
-      "docs",
-      "dist",
-      "public",
-      "**/node_modules/**",
-      "bin"
-    ],
+    "ignore": ["node_modules", "docs", "dist", "public", "bin"],
     "rules": {
+      "suspicious": {
+        "noArrayIndexKey": "off"
+      },
       "recommended": true
     }
   },
@@ -24,17 +21,25 @@
     "indentWidth": 2,
     "lineWidth": 80,
     "lineEnding": "lf",
-    "ignore": [
-      "node_modules",
-      "docs",
-      "dist",
-      "public",
-      "**/node_modules/**",
-      "bin"
-    ]
+    "ignore": ["node_modules", "docs", "dist", "public", "bin"]
   },
-  "files": {
-    "ignore": ["node_modules", "**/node_modules/**", "dist", "bin"],
-    "ignoreUnknown": true
+  "organizeImports": {
+    "enabled": true
+  },
+  "json": {
+    "parser": {
+      "allowComments": true
+    }
+  },
+  "css": {
+    "parser": {
+      "cssModules": true
+    },
+    "formatter": {
+      "enabled": true
+    },
+    "linter": {
+      "enabled": true
+    }
   }
 }

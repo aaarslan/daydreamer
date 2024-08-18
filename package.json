@@ -15,40 +15,33 @@
     "type": "git",
     "url": "git+https://github.com/aaarslan/daydreamer.git"
   },
-  "keywords": ["datepicker", "react", "daydreamer"],
+  "keywords": ["datepicker", "calendar", "react", "daydreamer"],
   "author": "A. Arslan",
   "license": "MIT",
   "private": false,
-  "version": "0.0.9",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc --p ./tsconfig-build.json && vite build",
-    "format": "biome format --changed --write"
-  },
-  "dependencies": {
-    "date-fns": "^3.6.0",
-    "@react-input/number-format": "^1.0.22",
-    "@linaria/core": "^6.1.0",
-    "@linaria/react": "^6.1.0"
+    "lint": "biome check --write lib/*"
   },
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.6.1",
-    "@types/node": "^20.11.30",
-    "@types/react": "^18.2.56",
-    "@types/react-dom": "^18.2.19",
-    "@vitejs/plugin-react": "^4.2.1",
-    "@wyw-in-js/babel-preset": "^0.5.0",
-    "@wyw-in-js/vite": "^0.5.0",
-    "lefthook": "^1.6.4",
-    "terser": "^5.29.2",
-    "typescript": "^5.2.2",
-    "vite": "^5.1.4",
-    "vite-plugin-dts": "^3.7.3",
-    "vite-plugin-lib-inject-css": "^2.0.0"
-  }
+    "@biomejs/biome": "^1.8.3",
+    "@evilmartians/lefthook": "^1.7.14",
+    "@types/node": "^22.4.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "terser": "^5.31.6",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.1",
+    "vite-plugin-dts": "^4.0.3",
+    "vite-plugin-lib-inject-css": "^2.1.1"
+  },
+  "sideEffects": ["**/*.css"]
 }
