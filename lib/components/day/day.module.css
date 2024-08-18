@@ -1,45 +1,60 @@
 .day {
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 40px;
   height: 40px;
-  align-items: center;
-  cursor: pointer;
   border: none;
-  color: var(--primary-color, #1e1e1e);
-  background-color: var(--background-color, #ffffff);
+  background-color: transparent;
+  color: var(--primary-color);
   font-weight: bold;
-  position: relative;
-  border-radius: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .day:hover:not(.disabled):not(.overflow) {
-  background-color: var(--hover-color, #d2e0fd);
+  background-color: var(--hover-color);
 }
 
 .selected {
-  background-color: var(--selected-color, #1e66f5);
-  color: var(--selected-text-color, #ffffff);
-  border-radius: 50%;
-  z-index: 1;
+  background-color: var(--selected-color);
+  color: var(--selected-text-color);
 }
 
 .inRange {
-  background-color: var(--range-color, #d2e0fd);
+  background-color: var(--hover-color);
 }
 
-.rangeStart {
+.rangeStart,
+.rangeEnd {
+  background-color: var(--selected-color);
+  color: var(--selected-text-color);
+}
+
+.today:not(.selected) {
+  border: 2px solid var(--selected-color);
+}
+
+.disabled,
+.overflow {
+  color: var(--disabled-color);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.overflow {
+  opacity: 0.5;
+}
+
+.firstDayOfMonth {
   border-top-left-radius: 50%;
   border-bottom-left-radius: 50%;
 }
 
-.rangeEnd {
+.lastDayOfMonth {
   border-top-right-radius: 50%;
   border-bottom-right-radius: 50%;
-}
-
-.rangeStart.rangeEnd {
-  border-radius: 50%;
 }
 
 .firstDayOfMonth.inRange:not(.rangeStart) {
@@ -50,25 +65,4 @@
 .lastDayOfMonth.inRange:not(.rangeEnd) {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-}
-
-.rangeStart::before,
-.rangeEnd::before {
-  content: none;
-}
-
-.today {
-  color: var(--selected-color, #1e66f5);
-}
-
-.disabled {
-  color: var(--disabled-color, #666666);
-  cursor: not-allowed;
-  font-weight: lighter;
-}
-
-.overflow {
-  color: var(--overflow-color, #cccccc);
-  cursor: not-allowed;
-  font-weight: lighter;
 }

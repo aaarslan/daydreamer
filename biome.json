@@ -1,19 +1,12 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
   "files": {
-    "ignore": ["node_modules", "**/node_modules/**", "dist", "bin"],
+    "ignore": ["node_modules", "dist", "bin"],
     "ignoreUnknown": true
   },
   "linter": {
     "enabled": true,
-    "ignore": [
-      "node_modules",
-      "docs",
-      "dist",
-      "public",
-      "**/node_modules/**",
-      "bin"
-    ],
+    "ignore": ["node_modules", "docs", "dist", "public", "bin"],
     "rules": {
       "suspicious": {
         "noArrayIndexKey": "off"
@@ -28,14 +21,7 @@
     "indentWidth": 2,
     "lineWidth": 80,
     "lineEnding": "lf",
-    "ignore": [
-      "node_modules",
-      "docs",
-      "dist",
-      "public",
-      "**/node_modules/**",
-      "bin"
-    ]
+    "ignore": ["node_modules", "docs", "dist", "public", "bin"]
   },
   "organizeImports": {
     "enabled": true

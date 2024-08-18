@@ -2,17 +2,31 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1rem;
-  height: 3rem;
-  color: var(--primary-color, #1e1e1e);
-  background-color: var(--background-color, #ffffff);
+  padding: 0.5rem;
+  background-color: var(--background-color);
+  color: var(--primary-color);
   font-weight: bold;
-  border-radius: 8px 8px 0px 0px;
 }
 
-.monthHeader button {
+.navButton {
   background-color: transparent;
   border: none;
   cursor: pointer;
-  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+.navButton:hover:not(:disabled) {
+  color: var(--selected-color);
+}
+
+.navButton:disabled {
+  color: var(--disabled-color);
+  cursor: not-allowed;
+}
+
+.monthYear {
+  font-size: 1.2rem;
 }

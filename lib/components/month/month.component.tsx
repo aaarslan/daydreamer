@@ -3,9 +3,10 @@ import styles from "./month.module.css";
 
 interface MonthHeaderProps {
   visibleMonth: Date;
-  onPrevMonth: () => void;
-  onNextMonth: () => void;
+  onPrevMonth?: () => void;
+  onNextMonth?: () => void;
   locale: string;
+  customStyles?: React.CSSProperties;
 }
 
 export const MonthHeader: React.FC<MonthHeaderProps> = ({
@@ -13,17 +14,28 @@ export const MonthHeader: React.FC<MonthHeaderProps> = ({
   onPrevMonth,
   onNextMonth,
   locale,
+  customStyles = {},
 }) => {
   const monthName = visibleMonth.toLocaleString(locale, { month: "long" });
   const year = visibleMonth.getFullYear();
 
   return (
-    <div className={styles.monthHeader}>
-      <button type="button" onClick={onPrevMonth}>
+    <div className={styles.monthHeader} style={customStyles}>
+      <button
+        type="button"
+        onClick={onPrevMonth}
+        disabled={!onPrevMonth}
+        className={styles.navButton}
+      >
         &lt;
       </button>
-      <span>{`${monthName} ${year}`}</span>
-      <button type="button" onClick={onNextMonth}>
+      <span className={styles.monthYear}>{`${monthName} ${year}`}</span>
+      <button
+        type="button"
+        onClick={onNextMonth}
+        disabled={!onNextMonth}
+        className={styles.navButton}
+      >
         &gt;
       </button>
     </div>

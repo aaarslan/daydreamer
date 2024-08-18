@@ -19,7 +19,7 @@
   "author": "A. Arslan",
   "license": "MIT",
   "private": false,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -32,15 +32,15 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
-    "@evilmartians/lefthook": "^1.6.18",
-    "@types/node": "^20.14.10",
+    "@evilmartians/lefthook": "^1.7.14",
+    "@types/node": "^22.4.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "terser": "^5.31.1",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.3",
-    "vite-plugin-dts": "^3.9.1",
+    "terser": "^5.31.6",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.1",
+    "vite-plugin-dts": "^4.0.3",
     "vite-plugin-lib-inject-css": "^2.1.1"
   },
   "sideEffects": ["**/*.css"]

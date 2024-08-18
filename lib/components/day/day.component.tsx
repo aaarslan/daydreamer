@@ -13,6 +13,12 @@ interface DayProps {
   isFirstDayOfMonth: boolean;
   isLastDayOfMonth: boolean;
   onClick: () => void;
+  customStyles?: {
+    day?: React.CSSProperties;
+    selected?: React.CSSProperties;
+    range?: React.CSSProperties;
+    disabled?: React.CSSProperties;
+  };
 }
 
 export const Day: React.FC<DayProps> = ({
@@ -27,6 +33,7 @@ export const Day: React.FC<DayProps> = ({
   isFirstDayOfMonth,
   isLastDayOfMonth,
   onClick,
+  customStyles = {},
 }) => {
   const classNames = [
     styles.day,
@@ -43,12 +50,20 @@ export const Day: React.FC<DayProps> = ({
     .filter(Boolean)
     .join(" ");
 
+  const combinedStyles = {
+    ...customStyles.day,
+    ...(isSelected && customStyles.selected),
+    ...(isInRange && customStyles.range),
+    ...(isDisabled && customStyles.disabled),
+  };
+
   return (
     <button
       type="button"
       className={classNames}
       onClick={onClick}
       disabled={isDisabled || isOverflow}
+      style={combinedStyles}
     >
       {date.getDate()}
     </button>
