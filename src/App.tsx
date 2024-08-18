@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Datepicker } from "../lib";
 
 function App() {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | Date[] | null>(null);
+  const [selectionMode, setSelectionMode] = useState<
+    "single" | "range" | "multiple"
+  >("single");
 
   return (
     <div>
@@ -13,36 +16,49 @@ function App() {
           flexDirection: "column",
           alignItems: "center",
           color: "#d2e0fd",
+          gap: 400,
         }}
       >
-        <h1>Daydreamer</h1>
-        <h3>
-          Selected Date:{" "}
-          <span
-            style={{
-              color: "#f0f0f0",
-              fontSize: "1.5em",
-            }}
-          >
-            {selectedDate.toDateString()}
-          </span>
-        </h3>
-      </div>
-      <Datepicker
-        value={selectedDate}
-        onChange={(date) => setSelectedDate(date as Date)}
-        numberOfMonths={12}
-        selectionMode="single"
-        customStyles={{
-          container: {
-            height: "auto",
+        <div
+          style={{
             display: "flex",
-            flexWrap: "wrap",
-            flexDirection: "row",
-            width: "1200px",
-          },
-        }}
-      />
+            justifyContent: "center",
+            flexDirection: "column",
+
+            gap: 8,
+          }}
+        >
+          <h1>Daydreamer</h1>
+          <div>
+            <button type="button" onClick={() => setSelectionMode("single")}>
+              Single
+            </button>
+            <button type="button" onClick={() => setSelectionMode("range")}>
+              Range
+            </button>
+            <button type="button" onClick={() => setSelectionMode("multiple")}>
+              Multiple
+            </button>
+          </div>
+          <Datepicker
+            value={selectedDate}
+            onChange={setSelectedDate}
+            placeholder="Select date(s)"
+            selectionMode={selectionMode}
+            numberOfMonths={1}
+          />
+        </div>
+        <div>
+          <p>
+            Selected:{" "}
+            {Array.isArray(selectedDate)
+              ? selectedDate.map((date, index) => (
+                  <p key={index}>{date.toString()}</p>
+                ))
+              : "None"}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

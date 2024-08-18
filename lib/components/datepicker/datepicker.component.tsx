@@ -7,7 +7,7 @@ import styles from "./datepicker.module.css";
 
 export interface DatepickerProps {
   onChange: (date: Date | Date[]) => void;
-  value?: Date | Date[];
+  value?: Date | Date[] | null;
   dateFormat?: string;
   locale?: string;
   minDate?: Date;
