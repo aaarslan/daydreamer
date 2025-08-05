@@ -29,6 +29,21 @@ export interface DatepickerInputProps
 
   /** Position of the calendar dropdown */
   dropdownPosition?: "bottom" | "top" | "auto";
+
+  /** Size variant of the input */
+  size?: "small" | "medium" | "large";
+
+  /** Whether the input is in a loading state */
+  loading?: boolean;
+
+  /** Error message to display */
+  error?: string;
+
+  /** Whether the input is required */
+  required?: boolean;
+
+  /** Custom date range separator for display */
+  rangeSeparator?: string;
 }
 
 export const DatepickerInput: React.FC<DatepickerInputProps> = memo(
@@ -38,6 +53,16 @@ export const DatepickerInput: React.FC<DatepickerInputProps> = memo(
     placeholder = "Select date",
     inputFormat = "MM/dd/yyyy",
     selectionMode = "single",
+    disabled = false,
+    showClearButton = true,
+    icon,
+    dropdownPosition = "bottom",
+    size = "medium",
+    loading = false,
+    error,
+    required = false,
+    rangeSeparator = " - ",
+    className,
     ...datepickerProps
   }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -49,11 +74,27 @@ export const DatepickerInput: React.FC<DatepickerInputProps> = memo(
 
     const formatDate = (date: Date | Date[] | undefined | null): string => {
       if (!date || date === null) return "";
+
+      if (Array.isArray(date)) {
+        if (selectionMode === "range" && date.length === 2) {
+          return `${formatter.format(date[0])}${rangeSeparator}${formatter.format(date[1])}`;
+        }
+        if (selectionMode === "multiple") {
+          return date.map((d) => formatter.format(d)).join(", ");
+        }
+        if (date.length === 1) {
+          return formatter.format(date[0]);
+        }
+        return "";
+      }
+
       return formatter.format(date);
     };
 
     const handleInputClick = () => {
-      setIsOpen(true);
+      if (!disabled && !loading) {
+        setIsOpen(true);
+      }
     };
 
     const handleDateChange = (newDate: Date | Date[]) => {
@@ -85,8 +126,13 @@ export const DatepickerInput: React.FC<DatepickerInputProps> = memo(
     }, [handleClickOutside]);
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (disabled || loading) return;
+
       if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
         setIsOpen(true);
+      } else if (event.key === "Escape" && isOpen) {
+        setIsOpen(false);
       }
     };
 
@@ -95,9 +141,21 @@ export const DatepickerInput: React.FC<DatepickerInputProps> = memo(
       onChange(null);
     };
 
+    const containerClasses = [
+      styles.container,
+      className,
+      styles[size],
+      disabled && styles.disabled,
+      loading && styles.loading,
+      error && styles.error,
+    ]
+      .filter(Boolean)
+      .join(" ");
+
     return (
-      <div className={styles.container} ref={containerRef}>
+      <div className={containerClasses} ref={containerRef}>
         <div className={styles.inputWrapper}>
+          {icon && <div className={styles.iconWrapper}>{icon}</div>}
           <input
             type="text"
             className={styles.input}
@@ -105,11 +163,25 @@ export const DatepickerInput: React.FC<DatepickerInputProps> = memo(
             onClick={handleInputClick}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
+            disabled={disabled}
             readOnly
+            required={required}
             aria-haspopup="true"
+            aria-invalid={!!error}
+            aria-describedby={
+              error
+                ? `${containerRef.current?.id || "datepicker"}-error`
+                : undefined
+            }
             aria-label={`Date picker input. Current value: ${formatDate(value) || "No date selected"}`}
           />
-          {value && (
+          {loading && (
+            <div className={styles.loadingSpinner}>
+              <span aria-hidden="true">⟳</span>
+              <span className="sr-only">Loading</span>
+            </div>
+          )}
+          {value && showClearButton && !loading && !disabled && (
             <button
               type="button"
               className={styles.clearButton}
@@ -121,6 +193,15 @@ export const DatepickerInput: React.FC<DatepickerInputProps> = memo(
             </button>
           )}
         </div>
+        {error && (
+          <div
+            className={styles.errorMessage}
+            id={`${containerRef.current?.id || "datepicker"}-error`}
+            role="alert"
+          >
+            {error}
+          </div>
+        )}
         {isOpen && (
           <div
             className={styles.calendarContainer}

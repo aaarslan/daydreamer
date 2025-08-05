@@ -1,9 +1,9 @@
-import { 
-  Datepicker, 
-  type DatepickerProps, 
-  type DateValue, 
-  type SelectionMode, 
-  type CustomStyles 
+import {
+  type CustomStyles,
+  Datepicker,
+  type DatepickerProps,
+  type DateValue,
+  type SelectionMode,
 } from "./datepicker.component";
 
 export { Datepicker };
