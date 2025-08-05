@@ -1,33 +1,71 @@
 import type React from "react";
-import { useCallback, useId, useMemo, useState } from "react";
+import { memo, useCallback, useId, useMemo, useRef, useState } from "react";
 import { Day } from "../day";
 import { MonthHeader } from "../month";
 import { WeekdayHeader } from "../week";
 import styles from "./datepicker.module.css";
 
-export interface DatepickerProps {
-  onChange: (date: Date | Date[]) => void;
-  value?: Date | Date[] | null;
-  dateFormat?: string;
-  locale?: string;
-  minDate?: Date;
-  maxDate?: Date;
-  isDateDisabled?: (date: Date) => boolean;
-  firstDayOfWeek?: number;
-  selectionMode?: "single" | "range" | "multiple";
-  numberOfMonths?: number;
-  customStyles?: {
-    container?: React.CSSProperties;
-    day?: React.CSSProperties;
-    selectedDay?: React.CSSProperties;
-    rangeDay?: React.CSSProperties;
-    disabledDay?: React.CSSProperties;
-    monthHeader?: React.CSSProperties;
-    weekdayHeader?: React.CSSProperties;
-  };
+export type DateValue = Date | Date[] | null | undefined;
+export type SelectionMode = "single" | "range" | "multiple";
+export type DateDisabledCallback = (date: Date) => boolean;
+
+export interface CustomStyles {
+  container?: React.CSSProperties;
+  day?: React.CSSProperties;
+  selectedDay?: React.CSSProperties;
+  rangeDay?: React.CSSProperties;
+  disabledDay?: React.CSSProperties;
+  monthHeader?: React.CSSProperties;
+  weekdayHeader?: React.CSSProperties;
+  calendarGrid?: React.CSSProperties;
+  month?: React.CSSProperties;
 }
 
-export function Datepicker({
+export interface DatepickerProps {
+  /** Callback fired when date selection changes */
+  onChange: (date: Date | Date[]) => void;
+
+  /** Current selected date(s) */
+  value?: DateValue;
+
+  /** Date format string (currently not used, formatting handled by Intl) */
+  dateFormat?: string;
+
+  /** Locale for date formatting and month/weekday names */
+  locale?: string;
+
+  /** Minimum selectable date */
+  minDate?: Date;
+
+  /** Maximum selectable date */
+  maxDate?: Date;
+
+  /** Function to determine if a specific date should be disabled */
+  isDateDisabled?: DateDisabledCallback;
+
+  /** First day of week (0 = Sunday, 1 = Monday, etc.) */
+  firstDayOfWeek?: number;
+
+  /** Selection mode: single date, date range, or multiple dates */
+  selectionMode?: SelectionMode;
+
+  /** Number of months to display simultaneously */
+  numberOfMonths?: number;
+
+  /** Custom CSS styles for various components */
+  customStyles?: CustomStyles;
+
+  /** Additional CSS class name for the container */
+  className?: string;
+
+  /** Whether to show days from adjacent months */
+  showAdjacentDays?: boolean;
+
+  /** Whether the calendar should be disabled */
+  disabled?: boolean;
+}
+
+export const Datepicker = memo(function Datepicker({
   onChange,
   value,
   locale = "en-US",
@@ -38,6 +76,9 @@ export function Datepicker({
   selectionMode = "single",
   numberOfMonths = 1,
   customStyles = {},
+  className,
+  showAdjacentDays: _showAdjacentDays = true,
+  disabled = false,
 }: DatepickerProps) {
   const [selectedDates, setSelectedDates] = useState<Date[]>(() => {
     if (Array.isArray(value)) return value;
@@ -52,6 +93,7 @@ export function Datepicker({
   });
 
   const dayId = useId();
+  const calendarRef = useRef<HTMLDivElement>(null);
 
   const handlePrevMonth = useCallback(() => {
     setVisibleMonth((prevMonth) => {
@@ -157,10 +199,65 @@ export function Datepicker({
     [onChange, isDateDisabledWrapper, selectionMode, selectedDates],
   );
 
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!calendarRef.current) return;
+
+      const focusedElement = document.activeElement as HTMLButtonElement;
+      if (!focusedElement || !focusedElement.matches("button")) return;
+
+      const buttons = Array.from(
+        calendarRef.current.querySelectorAll("button:not(:disabled)"),
+      ) as HTMLButtonElement[];
+      const currentIndex = buttons.indexOf(focusedElement);
+
+      let nextIndex = currentIndex;
+
+      switch (event.key) {
+        case "ArrowLeft":
+          nextIndex = Math.max(0, currentIndex - 1);
+          break;
+        case "ArrowRight":
+          nextIndex = Math.min(buttons.length - 1, currentIndex + 1);
+          break;
+        case "ArrowUp":
+          nextIndex = Math.max(0, currentIndex - 7);
+          break;
+        case "ArrowDown":
+          nextIndex = Math.min(buttons.length - 1, currentIndex + 7);
+          break;
+        case "Home":
+          nextIndex = 0;
+          break;
+        case "End":
+          nextIndex = buttons.length - 1;
+          break;
+        default:
+          return;
+      }
+
+      event.preventDefault();
+      buttons[nextIndex]?.focus();
+    },
+    [],
+  );
+
   return (
-    <div className={styles.datepicker} style={customStyles.container}>
+    <div
+      className={`${styles.datepicker} ${className || ""}`}
+      style={customStyles.container}
+      ref={calendarRef}
+      onKeyDown={disabled ? undefined : handleKeyDown}
+      role="application"
+      aria-label="Calendar date picker"
+      aria-disabled={disabled}
+    >
       {calendarDays.map((monthDays, monthIndex) => (
-        <div key={`month-${monthIndex}`} className={styles.month}>
+        <div
+          key={`month-${monthIndex}`}
+          className={styles.month}
+          style={customStyles.month}
+        >
           <MonthHeader
             visibleMonth={
               new Date(
@@ -181,7 +278,10 @@ export function Datepicker({
             firstDayOfWeek={firstDayOfWeek}
             customStyles={customStyles.weekdayHeader}
           />
-          <div className={styles.calendarGrid}>
+          <div
+            className={styles.calendarGrid}
+            style={customStyles.calendarGrid}
+          >
             {monthDays.map(({ date, isOverflow }, index) => {
               const isSelected = selectedDates.some(
                 (d) => d.toDateString() === date.toDateString(),
@@ -234,4 +334,4 @@ export function Datepicker({
       ))}
     </div>
   );
-}
+});

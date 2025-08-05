@@ -1,20 +1,53 @@
 .datepicker {
-  --primary-color: #1e1e1e;
-  --background-color: #ffffff;
-  --selected-color: #1e66f5;
-  --selected-text-color: #ffffff;
-  --hover-color: #d2e0fd;
-  --disabled-color: #cccccc;
-  --overflow-color: #999999;
+  /* Core theme colors */
+  --dp-primary-color: #1e1e1e;
+  --dp-background-color: #ffffff;
+  --dp-selected-color: #1e66f5;
+  --dp-selected-text-color: #ffffff;
+  --dp-hover-color: #d2e0fd;
+  --dp-disabled-color: #cccccc;
+  --dp-overflow-color: #999999;
+  --dp-today-border-color: #1e66f5;
+  --dp-range-color: #e8f2ff;
+
+  /* Typography */
+  --dp-font-family: inherit;
+  --dp-font-size: 0.875rem;
+  --dp-font-weight: 400;
+  --dp-font-weight-bold: 600;
+
+  /* Spacing */
+  --dp-border-radius: 8px;
+  --dp-day-size: 40px;
+  --dp-gap: 0.25rem;
+  --dp-padding: 1rem;
+
+  /* Shadows */
+  --dp-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  --dp-shadow-popup: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  /* Animation */
+  --dp-transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+
+  /* Legacy support (deprecated, use dp- prefixed ones) */
+  --primary-color: var(--dp-primary-color);
+  --background-color: var(--dp-background-color);
+  --selected-color: var(--dp-selected-color);
+  --selected-text-color: var(--dp-selected-text-color);
+  --hover-color: var(--dp-hover-color);
+  --disabled-color: var(--dp-disabled-color);
+  --overflow-color: var(--dp-overflow-color);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--dp-gap);
   width: fit-content;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-  background-color: var(--background-color);
+  padding: var(--dp-padding);
+  border-radius: var(--dp-border-radius);
+  box-shadow: var(--dp-shadow);
+  background-color: var(--dp-background-color);
+  font-family: var(--dp-font-family);
+  font-size: var(--dp-font-size);
 }
 
 .month {
@@ -25,6 +58,6 @@
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.25rem;
-  padding: 0.5rem;
+  gap: var(--dp-gap);
+  padding: calc(var(--dp-padding) / 2);
 }
